@@ -1,0 +1,28 @@
+{
+  "name": "security-rbac-tests",
+  "version": "1.0.0",
+  "description": "RBAC tests",
+  "main": "index.js",
+  "scripts": {
+    "compile": "tsc --noemit",
+    "test": "jest --testMatch **/test/**/*.test.ts --runInBand",
+    "build-types:role-assignment": "openapi-typescript https://raw.githubusercontent.com/mojaloop/role-assignment-service/master/src/interface/api.yaml --output test/types/role_assignment.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/jest": "^27.4.0",
+    "@types/tough-cookie": "^4.0.1",
+    "env-var": "^7.1.1",
+    "got": "11.8.3",
+    "jest": "^27.4.7",
+    "node-html-parser": "^5.2.0",
+    "tough-cookie": "^4.0.0",
+    "ts-jest": "^27.1.2",
+    "typescript": "^4.5.4"
+  },
+  "devDependencies": {
+    "openapi-typescript": "^5.1.0"
+  }
+}
