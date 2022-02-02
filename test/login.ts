@@ -60,8 +60,8 @@ export default async function login (username: string, password: string, basePat
   // This should fail and return a 401, but we'll get the CSRF token from it
   await got(`${basePath}/kratos/sessions/whoami`, {
     headers: {
-      'accept': 'application/json, text/plain, */*',
-      'Referer': `${basePath}/`,
+      accept: 'application/json, text/plain, */*',
+      Referer: `${basePath}/`,
       'Referrer-Policy': 'strict-origin-when-cross-origin'
     },
     method: 'GET',
@@ -126,7 +126,7 @@ export default async function login (username: string, password: string, basePat
 
   const authorize = await got(authorizeUrl, {
     headers: {
-      accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+      accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9'
     },
     method: 'GET',
     throwHttpErrors: false,
@@ -158,10 +158,10 @@ export default async function login (username: string, password: string, basePat
     followRedirect: false
   })
 
-  assert.equal(commonAuth.statusCode, 302, 'Expected to receive a redirect to authorize');
-  assert(commonAuth.headers.location, 'Expected to receive redirect location for authorize');
-  const authorizeUrl2 = new URL(commonAuth.headers.location);
-  await assertCookie(loginUrl.origin, 'commonAuthId');
+  assert.equal(commonAuth.statusCode, 302, 'Expected to receive a redirect to authorize')
+  assert(commonAuth.headers.location, 'Expected to receive redirect location for authorize')
+  const authorizeUrl2 = new URL(commonAuth.headers.location)
+  await assertCookie(loginUrl.origin, 'commonAuthId')
 
   const authorize2 = await got(authorizeUrl2, {
     headers: {
@@ -173,9 +173,9 @@ export default async function login (username: string, password: string, basePat
     cookieJar
   })
 
-  assert.equal(authorize2.statusCode, 302, 'Expected to receive a redirect to authorize');
-  assert(authorize2.headers.location, 'Expected to receive redirect location for authorize');
-  let idpCallbackUrl: URL;
+  assert.equal(authorize2.statusCode, 302, 'Expected to receive a redirect to authorize')
+  assert(authorize2.headers.location, 'Expected to receive redirect location for authorize')
+  let idpCallbackUrl: URL
   // Check if the redirect location is Oauth2 consent URL
   if (authorize2.headers.location.includes('authenticationendpoint/oauth2_consent.do')) {
     const oauth2ConsentUrl = new URL(authorize2.headers.location)
@@ -184,7 +184,7 @@ export default async function login (username: string, password: string, basePat
     assert(sessionDataKeyConsent, 'Need to extract session data key consent from login redirect URL')
     const consentResponse = await got(oauth2ConsentUrl, {
       headers: {
-        accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+        accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9'
       },
       method: 'GET',
       throwHttpErrors: false,
@@ -222,7 +222,7 @@ export default async function login (username: string, password: string, basePat
       body: bodyParamsConsent.toString(),
       method: 'POST',
       throwHttpErrors: false,
-      followRedirect: false,
+      followRedirect: false
     })
     assert.equal(consentApproval.statusCode, 302, 'Expected to receive a redirect to consent')
     assert(consentApproval.headers.location, 'Expected to receive redirect location for consent')

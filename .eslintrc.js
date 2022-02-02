@@ -37,7 +37,8 @@ module.exports = {
     'cucumber/no-arrow-functions': 2,
     'import/default': 'warn', // Support legacy modules without default export
     'import/extensions': 'off',
-    'max-len': ["warn", { "code": 120 }]
+    'max-len': ["warn", { "code": 120 }],
+    'camelcase': 'off'
   },
   settings: {
     "import/resolver": {
