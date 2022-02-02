@@ -29,7 +29,7 @@
  --------------
  ******/
 
-import got, { Method, OptionsOfJSONResponseBody } from 'got';
+import got, { Method, OptionsOfJSONResponseBody } from 'got'
 import {
   Users,
   User,
@@ -37,17 +37,14 @@ import {
   Role,
   RolePatch,
   TestParameters
-} from './types';
+} from './types'
 import {
   roleAssignmentSvcBasePath,
-  mlIngressBasePath,
-  proxyPrefix,
-  username,
-  password,
-} from '../config';
-import { CookieJar } from 'tough-cookie';
+  username
+} from '../config'
+import { CookieJar } from 'tough-cookie'
 
-export function getAllowDenyList(
+export function getAllowDenyList (
   allowRoles: string[],
   denyRoles: string[],
   testParameters: { url: URL, method: Method }
@@ -55,12 +52,12 @@ export function getAllowDenyList(
   return {
     allow: allowRoles.map(role => ({
       ...testParameters,
-      role,
+      role
     })),
     deny: denyRoles.map(role => ({
       ...testParameters,
-      role,
-    })),
+      role
+    }))
   }
 }
 
@@ -70,73 +67,73 @@ const GOT_JSON_OPTS: OptionsOfJSONResponseBody = {
   responseType: 'json',
   throwHttpErrors: false,
   headers: {
-      'content-type': 'application/json',
-      'accept': 'application/json',
-  },
-};
-
-export async function clearUserRoles(id: User["id"]) {
-  const response = await got.get<Roles>(
-      `${roleAssignmentSvcBasePath}/users/${id}/roles`,
-      GOT_JSON_OPTS,
-  );
-  expect(response.statusCode).toEqual(200);
-  if (response.body.roles.length > 0) {
-      const body: RolePatch = {
-          roleOperations: response.body.roles.map((role) => ({
-              roleId: role,
-              action: 'delete',
-          })),
-      }
-      await got.patch<null>(`${roleAssignmentSvcBasePath}/users/${id}/roles`, {
-          ...GOT_JSON_OPTS,
-          body: JSON.stringify(body),
-      });
-      expect(response.statusCode).toEqual(200);
+    'content-type': 'application/json',
+    accept: 'application/json'
   }
 }
 
-export async function appendUserRole(id: User["id"], role: Role) {
+export async function clearUserRoles (id: User['id']) {
+  const response = await got.get<Roles>(
+    `${roleAssignmentSvcBasePath}/users/${id}/roles`,
+    GOT_JSON_OPTS
+  )
+  expect(response.statusCode).toEqual(200)
+  if (response.body.roles.length > 0) {
+    const body: RolePatch = {
+      roleOperations: response.body.roles.map((role) => ({
+        roleId: role,
+        action: 'delete'
+      }))
+    }
+    await got.patch<null>(`${roleAssignmentSvcBasePath}/users/${id}/roles`, {
+      ...GOT_JSON_OPTS,
+      body: JSON.stringify(body)
+    })
+    expect(response.statusCode).toEqual(200)
+  }
+}
+
+export async function appendUserRole (id: User['id'], role: Role) {
   const body: RolePatch = {
-      roleOperations: [{
-          roleId: role,
-          action: 'insert',
-      }],
+    roleOperations: [{
+      roleId: role,
+      action: 'insert'
+    }]
   }
   await got.patch<null>(`${roleAssignmentSvcBasePath}/users/${id}/roles`, {
-      ...GOT_JSON_OPTS,
-      body: JSON.stringify(body),
-  });
+    ...GOT_JSON_OPTS,
+    body: JSON.stringify(body)
+  })
 }
 
-export async function getUser() {
-  const response = await got.get<Users>(`${roleAssignmentSvcBasePath}/users`, GOT_JSON_OPTS);
-  expect(response.statusCode).toEqual(200);
-  const user = response.body.users?.find((user: User) => user.username === username);
-  expect(user?.id).toBeDefined();
+export async function getUser () {
+  const response = await got.get<Users>(`${roleAssignmentSvcBasePath}/users`, GOT_JSON_OPTS)
+  expect(response.statusCode).toEqual(200)
+  const user = response.body.users?.find((user: User) => user.username === username)
+  expect(user?.id).toBeDefined()
   return user
 }
 
-export async function allowCheck({ url, method, role } : TestParameters, testUser: User, cookieJar: CookieJar) {
-  await appendUserRole(testUser.id, role);
+export async function allowCheck ({ url, method, role } : TestParameters, testUser: User, cookieJar: CookieJar) {
+  await appendUserRole(testUser.id, role)
   const response = await got({
-      method,
-      url,
-      throwHttpErrors: false,
-      cookieJar,
-  });
+    method,
+    url,
+    throwHttpErrors: false,
+    cookieJar
+  })
   // TODO: what status codes are we actually expecting?
-  expect([401, 403]).not.toContain(response.statusCode);
+  expect([401, 403]).not.toContain(response.statusCode)
 }
 
-export async function denyCheck({ url, method, role } : TestParameters, testUser: User, cookieJar: CookieJar) {
-  await appendUserRole(testUser.id, role);
+export async function denyCheck ({ url, method, role } : TestParameters, testUser: User, cookieJar: CookieJar) {
+  await appendUserRole(testUser.id, role)
   const response = await got({
-      method,
-      url,
-      throwHttpErrors: false,
-      cookieJar,
-  });
+    method,
+    url,
+    throwHttpErrors: false,
+    cookieJar
+  })
   // TODO: what status codes are we actually expecting?
-  expect([401, 403]).toContain(response.statusCode);
+  expect([401, 403]).toContain(response.statusCode)
 }

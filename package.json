@@ -6,7 +6,11 @@
   "scripts": {
     "compile": "tsc --noemit",
     "test": "jest --testMatch **/test/**/*.test.ts --runInBand",
-    "build-types:role-assignment": "openapi-typescript https://raw.githubusercontent.com/mojaloop/role-assignment-service/master/src/interface/api.yaml --output test/types/role_assignment.ts"
+    "build-types:role-assignment": "openapi-typescript https://raw.githubusercontent.com/mojaloop/role-assignment-service/master/src/interface/api.yaml --prettier-config ./.prettierrc.js --output test/types/role_assignment.ts",
+    "audit:resolve": "SHELL=sh resolve-audit --production",
+    "audit:check": "SHELL=sh check-audit --production",
+    "lint": "eslint ./test/**/*.ts *.js",
+    "lint:fix": "eslint --fix ./test/**/*.ts *.js"
   },
   "keywords": [],
   "author": "",
@@ -23,6 +27,19 @@
     "typescript": "^4.5.4"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.10.2",
+    "@typescript-eslint/parser": "^5.10.2",
+    "eslint": "^8.8.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-config-standard": "^16.0.3",
+    "eslint-import-resolver-typescript": "^2.5.0",
+    "eslint-plugin-cucumber": "^1.4.0",
+    "eslint-plugin-import": "^2.25.4",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-promise": "^6.0.0",
+    "eslint-plugin-standard": "^5.0.0",
+    "npm-audit-resolver": "^3.0.0-6",
     "openapi-typescript": "^5.1.0"
   }
 }

@@ -29,39 +29,38 @@
  --------------
  ******/
 
-import got, { Method, OptionsOfJSONResponseBody } from 'got';
 import {
-    mlIngressBasePath,
-    proxyPrefix,
-    username,
-    password,
-} from '../config';
-import login from '../login';
+  mlIngressBasePath,
+  proxyPrefix,
+  username,
+  password
+} from '../config'
+import login from '../login'
 import {
   User,
   TestParameters
-} from './types';
+} from './types'
 
-import { getUser, clearUserRoles, appendUserRole, getAllowDenyList, allowCheck, denyCheck } from './helpers'
-import { CookieJar } from 'tough-cookie';
+import { getUser, clearUserRoles, getAllowDenyList, allowCheck, denyCheck } from './helpers'
+import { CookieJar } from 'tough-cookie'
 
-let testUser: User;
-let cookieJarObj: CookieJar;
+let testUser: User
+let cookieJarObj: CookieJar
 
 beforeAll(async () => {
-  const user = await getUser();
-  const { cookieJar } = await login(username, password, mlIngressBasePath);
-  cookieJarObj = cookieJar;
-  testUser = user!;
-});
+  const user = await getUser()
+  const { cookieJar } = await login(username, password, mlIngressBasePath)
+  cookieJarObj = cookieJar
+  testUser = user!
+})
 
 beforeEach(async () => {
-    await clearUserRoles(testUser.id);
+  await clearUserRoles(testUser.id)
 })
 
 afterAll(async () => {
-    await clearUserRoles(testUser.id);
-});
+  await clearUserRoles(testUser.id)
+})
 
 // Tests start here
 
@@ -69,33 +68,33 @@ const _transferApiTests = getAllowDenyList([
   'operator',
   'manager',
   'financeManager',
-  'clerk',
+  'clerk'
 ], [
   'dfspReconciliationReports',
-  'audit',
+  'audit'
 ], {
   url: new URL(`${proxyPrefix}/transfers`, mlIngressBasePath),
   method: 'POST'
-});
+})
 
 const allow: TestParameters[] = [
-  ..._transferApiTests.allow,
+  ..._transferApiTests.allow
 ]
 
 const deny: TestParameters[] = [
-  ..._transferApiTests.deny,
+  ..._transferApiTests.deny
 ]
 
 test.each(allow)(
-    'Test user with role $role is allowed access to $method $url',
-    async (testParams: TestParameters) => {
-      await allowCheck(testParams, testUser, cookieJarObj);
-    },
-);
+  'Test user with role $role is allowed access to $method $url',
+  async (testParams: TestParameters) => {
+    await allowCheck(testParams, testUser, cookieJarObj)
+  }
+)
 
 test.each(deny)(
-    'Test user with role $role is denied access to $method $url',
-    async (testParams: TestParameters) => {
-      await denyCheck(testParams, testUser, cookieJarObj);
-    },
-);
+  'Test user with role $role is denied access to $method $url',
+  async (testParams: TestParameters) => {
+    await denyCheck(testParams, testUser, cookieJarObj)
+  }
+)

@@ -29,39 +29,38 @@
  --------------
  ******/
 
-import got, { Method, OptionsOfJSONResponseBody } from 'got';
 import {
-    mlIngressBasePath,
-    proxyPrefix,
-    username,
-    password,
-} from '../config';
-import login from '../login';
+  mlIngressBasePath,
+  proxyPrefix,
+  username,
+  password
+} from '../config'
+import login from '../login'
 import {
   User,
   TestParameters
-} from './types';
+} from './types'
 
-import { getUser, clearUserRoles, appendUserRole, getAllowDenyList, allowCheck, denyCheck } from './helpers'
-import { CookieJar } from 'tough-cookie';
+import { getUser, clearUserRoles, getAllowDenyList, allowCheck, denyCheck } from './helpers'
+import { CookieJar } from 'tough-cookie'
 
-let testUser: User;
-let cookieJarObj: CookieJar;
+let testUser: User
+let cookieJarObj: CookieJar
 
 beforeAll(async () => {
-  const user = await getUser();
-  const { cookieJar } = await login(username, password, mlIngressBasePath);
-  cookieJarObj = cookieJar;
-  testUser = user!;
-});
+  const user = await getUser()
+  const { cookieJar } = await login(username, password, mlIngressBasePath)
+  cookieJarObj = cookieJar
+  testUser = user!
+})
 
 beforeEach(async () => {
-    await clearUserRoles(testUser.id);
+  await clearUserRoles(testUser.id)
 })
 
 afterAll(async () => {
-    await clearUserRoles(testUser.id);
-});
+  await clearUserRoles(testUser.id)
+})
 
 // Tests start here
 
@@ -69,78 +68,78 @@ const _participantViewTests = getAllowDenyList([
   'operator',
   'manager',
   'clerk',
-  'financeManager',
+  'financeManager'
 ], [
   'dfspReconciliationReports',
-  'audit',
+  'audit'
 ], {
   url: new URL(`${proxyPrefix}/central-admin/participants`, mlIngressBasePath),
   method: 'GET'
-});
+})
 
 const _positionFundsInOutTests = getAllowDenyList([
-  'financeManager',
+  'financeManager'
 ], [
   'operator',
   'manager',
   'clerk',
   'dfspReconciliationReports',
-  'audit',
+  'audit'
 ], {
   url: new URL(`${proxyPrefix}/central-admin/participants/1/accounts/1`, mlIngressBasePath),
   method: 'POST'
-});
+})
 
 const _participantDisableEnableTests = getAllowDenyList([
   'manager',
   'financeManager',
-  'clerk',
+  'clerk'
 ], [
   'dfspReconciliationReports',
   'audit',
-  'operator',
+  'operator'
 ], {
   url: new URL(`${proxyPrefix}/central-admin/participants/1/accounts/1`, mlIngressBasePath),
   method: 'PUT'
-});
+})
 
 const _positionNdcEditTests = getAllowDenyList([
-  'financeManager',
+  'financeManager'
 ], [
   'operator',
   'manager',
   'clerk',
   'dfspReconciliationReports',
-  'audit',
+  'audit'
 ], {
   url: new URL(`${proxyPrefix}/central-admin/participants/1/limits/1`, mlIngressBasePath),
   method: 'PUT'
-});
+})
 
 const allow: TestParameters[] = [
   ..._participantViewTests.allow,
   ..._positionFundsInOutTests.allow,
   ..._participantDisableEnableTests.allow,
-  ..._positionNdcEditTests.allow,
+  ..._positionNdcEditTests.allow
 ]
 
 const deny: TestParameters[] = [
   ..._participantViewTests.deny,
   ..._positionFundsInOutTests.deny,
   ..._participantDisableEnableTests.deny,
-  ..._positionNdcEditTests.deny,
+  ..._positionNdcEditTests.deny
 ]
 
 test.each(allow)(
-    'Test user with role $role is allowed access to $method $url',
-    async (testParams: TestParameters) => {
-      await allowCheck(testParams, testUser, cookieJarObj);
-    },
-);
+  'Test user with role $role is allowed access to $method $url',
+  async (testParams: TestParameters) => {
+    await allowCheck(testParams, testUser, cookieJarObj)
+  }
+)
 
 test.each(deny)(
-    'Test user with role $role is denied access to $method $url',
-    async (testParams: TestParameters) => {
-      await denyCheck(testParams, testUser, cookieJarObj);
-    },
-);
+  'Test user with role $role is denied access to $method $url',
+  async (testParams: TestParameters) => {
+    await denyCheck(testParams, testUser, cookieJarObj)
+  }
+)
