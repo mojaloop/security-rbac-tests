@@ -391,7 +391,7 @@ workflows:
             # - license-scan
             # - image-scan
             - audit-licenses
-            - linting-check
+            # - linting-check
             - vulnerability-check
           filters:
             tags:
