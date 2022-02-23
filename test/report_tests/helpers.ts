@@ -32,17 +32,13 @@ import { v4 as uuid } from 'uuid'
 import { createWriteStream } from 'fs'
 import stream from 'stream'
 import { promisify } from 'util'
+import axios from 'axios'
 
 import got, { OptionsOfJSONResponseBody } from 'got'
 import {
-  Users,
-  User,
   TestParameters
 } from './types'
-import {
-  roleAssignmentSvcBasePath,
-  username
-} from '../config'
+
 import { CookieJar } from 'tough-cookie'
 const pipeline = promisify(stream.pipeline)
 
@@ -55,14 +51,6 @@ const GOT_JSON_OPTS: OptionsOfJSONResponseBody = {
     'content-type': 'application/json',
     accept: 'application/json'
   }
-}
-
-export async function getUser () {
-  const response = await got.get<Users>(`${roleAssignmentSvcBasePath}/users`, GOT_JSON_OPTS)
-  expect(response.statusCode).toEqual(200)
-  const user = response.body.users?.find((user: User) => user.username === username)
-  expect(user?.id).toBeDefined()
-  return user
 }
 
 export async function getParticipant ({ url, method } : TestParameters, cookieJar: CookieJar): Promise<any[]> {
@@ -162,7 +150,8 @@ export async function getSettlementAuditReport ({ url, method } : TestParameters
   return reportFile
 }
 
-export async function getDfspSettlementStatementReport ({ url, method } : TestParameters, cookieJar: CookieJar): Promise<any> {
+export async function getDfspSettlementStatementReport (
+  { url, method } : TestParameters, cookieJar: CookieJar): Promise<any> {
   const downloadStream = await got.stream({
     url,
     method,
@@ -178,4 +167,91 @@ export async function getDfspSettlementStatementReport ({ url, method } : TestPa
     console.error(`Something went wrong. ${error}`)
   }
   return reportFile
+}
+
+export async function closeCurrentOpenSettlementWindow ({ url, method }
+:TestParameters, cookieJar: CookieJar) {
+  const body = { state: 'CLOSED', reason: 'Automated testing for Settlement Reports' }
+
+  const response = await got.post({
+    method,
+    url,
+    throwHttpErrors: false,
+    cookieJar,
+    ...GOT_JSON_OPTS,
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  })
+
+  expect([200, 400]).toContain(response.statusCode) // 400 is for empty window
+
+  return response.body
+}
+
+export async function getCurrentOpenSettlementWindow ({ url, method }
+:TestParameters, cookieJar: CookieJar) : Promise<any[]> {
+  const response = await got.get<any[]>({
+    method,
+    url,
+    ...GOT_JSON_OPTS,
+    cookieJar
+  })
+  return response.body
+}
+
+export async function sendMoney (options: any): Promise<any> {
+  const response = await axios(options)
+  return response.data
+}
+
+export async function createSettlement ({ url, method }
+:TestParameters, cookieJar: CookieJar, settlementWindowId: string): Promise<any> {
+  const body = {
+    settlementModel: 'DEFERREDNET',
+    reason: 'Automated testing of Settlement Report',
+    settlementWindows: [
+      { id: settlementWindowId }
+    ]
+  }
+
+  const response = await got.post({
+    method,
+    url,
+    throwHttpErrors: false,
+    cookieJar,
+    ...GOT_JSON_OPTS,
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  })
+
+  expect([200]).toContain(response.statusCode)
+
+  return response.body
+}
+
+export async function putSettlement ({ url, method }
+:TestParameters, cookieJar: CookieJar, body: any): Promise<any> {
+  const response = await got.put({
+    method,
+    url,
+    throwHttpErrors: false,
+    cookieJar,
+    ...GOT_JSON_OPTS,
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  })
+  expect([200]).toContain(response.statusCode)
+
+  return response.body
+}
+
+export async function getSettlement ({ url, method }
+:TestParameters, cookieJar: CookieJar) : Promise<any> {
+  const response = await got.get<any>({
+    method,
+    url,
+    ...GOT_JSON_OPTS,
+    cookieJar
+  })
+  return response.body
 }

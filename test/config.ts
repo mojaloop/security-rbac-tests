@@ -55,18 +55,27 @@ export const password = env.get('TEST_USER_PASSWORD')
   .default('http://bofportal.test.infra.mojatest.live.internal/proxy/central-admin')
   .asUrlObject()
   
+  export const centralSettlementEndpoint = env.get('CENTRAL_SETTLEMENT_ENDPOINT')
+  .default('http://bofportal.test.infra.mojatest.live.internal/proxy/central-settlements')
+  .asUrlObject()
+  
   export const reportBasePath = env.get('REPORT_BASE_PATH')
   .default('http://bofportal.test.infra.mojatest.live.internal/proxy/reports')
   .asUrlObject()
   
+  export const sendMoneyEndpoint = env.get('SEND_MONEY_ENDPOINT')
+  .default('http://test.pm4mlsenderfsp.infratestk3s.test.infra.mojatest.live/cc-send/sendmoney')
+  .asUrlObject()
+  
   export const payer = env.get('TEST_PAYER')
-  .default('greenbankfsp')
+  .default('pm4mlsenderfsp')
   .asString()
 
   export const payee = env.get('TEST_PAYEE')
-  .default('pinkbankfsp')
+  .default('pm4mlreceiverfsp')
   .asString()
 
   export const currency = env.get('TEST_CURRENCY')
   .default('USD')
   .asString()
+

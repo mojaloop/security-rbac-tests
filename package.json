@@ -22,6 +22,7 @@
     "@types/sleep": "0.0.8",
     "@types/tough-cookie": "^4.0.1",
     "@types/uuid": "^8.3.4",
+    "axios": "^0.26.0",
     "env-var": "^7.1.1",
     "exceljs": "^4.3.0",
     "fs": "0.0.1-security",
