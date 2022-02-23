@@ -354,7 +354,7 @@ describe('DFSP Settlements Statement Report', () => {
 
           // Validate the first funds in for payer
           const payerFirstFundsIn = payerRecords[payerFundsInTransferId]
-          const payerStartingBalance = parseFloat(payerFirstFundsIn[7].replace(',', ''))
+          const payerStartingBalance = parseFloat(payerFirstFundsIn[7].replaceAll(',', ''))
           expect(payerFirstFundsIn[1]).toEqual(payerFundsInTransferId) // transferId
           expect(payerFirstFundsIn[3]).not.toBeUndefined() // datetime
           expect(payerFirstFundsIn[4]).toEqual('Testing funds in') // Process Description
@@ -369,8 +369,8 @@ describe('DFSP Settlements Statement Report', () => {
           expect(payerFundsOut[3]).not.toBeUndefined() // datetime
           expect(payerFundsOut[4]).toEqual('Testing funds out') // Process Description
           expect(payerFundsOut[5]).toBeUndefined() // funds out amount
-          expect(payerFundsOut[6].replace(',', '')).toEqual(transferAmount) // funds in amount
-          expect(payerFundsOut[7].replace(',', '')).toEqual(balanceAfterFundsOut) // balance
+          expect(payerFundsOut[6].replaceAll(',', '')).toEqual(transferAmount) // funds in amount
+          expect(payerFundsOut[7].replaceAll(',', '')).toEqual(balanceAfterFundsOut) // balance
         })
 
       // Get the latest settlement statement report for payee
@@ -422,11 +422,11 @@ describe('DFSP Settlements Statement Report', () => {
 
           // Validate the first funds in for payee
           const payeeFirstFundsIn = payeeRecords[payeeFundsInTransferId]
-          const payeeStartingBalance = parseFloat(payeeFirstFundsIn[7].replace(',', ''))
+          const payeeStartingBalance = parseFloat(payeeFirstFundsIn[7].replaceAll(',', ''))
           expect(payeeFirstFundsIn[1]).toEqual(payeeFundsInTransferId) // transferId
           expect(payeeFirstFundsIn[3]).not.toBeUndefined() // datetime
           expect(payeeFirstFundsIn[4]).toEqual('Testing funds in') // Process Description
-          expect(payeeFirstFundsIn[5].replace(',', '')).toEqual(fundsInAmount) // funds in amount
+          expect(payeeFirstFundsIn[5].replaceAll(',', '')).toEqual(fundsInAmount) // funds in amount
           expect(payeeFirstFundsIn[6]).toBeUndefined() // funds out amount
           expect(payeeFirstFundsIn[7]).not.toBeUndefined() // balance
 
@@ -436,9 +436,9 @@ describe('DFSP Settlements Statement Report', () => {
           expect(payeeFundsIn[1]).toEqual(fundsInTransferId) // transferId
           expect(payeeFundsIn[3]).not.toBeUndefined() // datetime
           expect(payeeFundsIn[4]).toEqual('Testing funds in') // Process Description
-          expect(payeeFundsIn[5].replace(',', '')).toEqual(transferAmount) // funds in amount
+          expect(payeeFundsIn[5].replaceAll(',', '')).toEqual(transferAmount) // funds in amount
           expect(payeeFundsIn[6]).toBeUndefined() // funds out amount
-          expect(payeeFundsIn[7].replace(',', '')).toEqual(balanceAfterFundsIn) // balance
+          expect(payeeFundsIn[7].replaceAll(',', '')).toEqual(balanceAfterFundsIn) // balance
         })
 
       expect(1).toBe(1)
@@ -547,7 +547,7 @@ describe('DFSP Settlements Statement Report', () => {
 
           // Validate the first funds in
           const firstFundsIn = reportRecords[fundsInTransferId1]
-          const startingBalance = parseFloat(firstFundsIn[7].replace(',', ''))
+          const startingBalance = parseFloat(firstFundsIn[7].replaceAll(',', ''))
           expect(firstFundsIn[1]).toEqual(fundsInTransferId1) // transferId
           expect(firstFundsIn[3]).not.toBeUndefined() // datetime
           expect(firstFundsIn[4]).toEqual('Testing funds in') // Process Description
@@ -562,8 +562,8 @@ describe('DFSP Settlements Statement Report', () => {
           expect(firstFundsOut[3]).not.toBeUndefined() // datetime
           expect(firstFundsOut[4]).toEqual('Testing funds out') // Process Description
           expect(firstFundsOut[5]).toBeUndefined() // funds out amount
-          expect(firstFundsOut[6].replace(',', '')).toEqual(fundsOutAmount1) // funds in amount
-          expect(firstFundsOut[7].replace(',', '')).toEqual(balanceAfterFundsOut) // balance
+          expect(firstFundsOut[6].replaceAll(',', '')).toEqual(fundsOutAmount1) // funds in amount
+          expect(firstFundsOut[7].replaceAll(',', '')).toEqual(balanceAfterFundsOut) // balance
 
           // validate the second funds in
           const secondFundsIn = reportRecords[fundsInTransferId2]
@@ -571,9 +571,9 @@ describe('DFSP Settlements Statement Report', () => {
           expect(secondFundsIn[1]).toEqual(fundsInTransferId2) // transferId
           expect(secondFundsIn[3]).not.toBeUndefined() // datetime
           expect(secondFundsIn[4]).toEqual('Testing funds in') // Process Description
-          expect(secondFundsIn[5].replace(',', '')).toEqual(fundsInAmount2) // funds in amount
+          expect(secondFundsIn[5].replaceAll(',', '')).toEqual(fundsInAmount2) // funds in amount
           expect(secondFundsIn[6]).toBeUndefined() // funds out amount
-          expect(secondFundsIn[7].replace(',', '')).toEqual(balanceAfterFundsIn) // balance
+          expect(secondFundsIn[7].replaceAll(',', '')).toEqual(balanceAfterFundsIn) // balance
         })
 
       expect(1).toBe(1)
