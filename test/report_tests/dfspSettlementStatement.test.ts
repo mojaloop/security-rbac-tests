@@ -461,8 +461,9 @@ describe('DFSP Settlements Statement Report', () => {
       }
 
       const fundsInAmount1 = '5.17'
-      const fundsOutAmount1 = '7.45'
       const fundsInAmount2 = '15.92'
+      const fundsOutAmount1 = '7.45'
+      const fundsOutAmount2 = '9999999999.99'
 
       const fundsInTransferId1 = await fundsIn(
         fundsInParams,
@@ -491,6 +492,16 @@ describe('DFSP Settlements Statement Report', () => {
         'Test Reference funds in 2'
       )
 
+      // DO a funds out that will fail due to insufficient funds
+      const fundsOutTransferId2 = await fundsOut(
+        fundsInParams,
+        cookieJarObj,
+        currency,
+        fundsOutAmount2,
+        'test1@test.com',
+        'Test Reference funds out'
+      )
+      
       // Get the end date + 2 mins to allow for the transfers to complete
       const endDate: string = DateTime.now().plus({ minutes: 2 }).toUTC().toISO()
 
@@ -574,6 +585,11 @@ describe('DFSP Settlements Statement Report', () => {
           expect(secondFundsIn[5].replaceAll(',', '')).toEqual(fundsInAmount2) // funds in amount
           expect(secondFundsIn[6]).toBeUndefined() // funds out amount
           expect(secondFundsIn[7].replaceAll(',', '')).toEqual(balanceAfterFundsIn) // balance
+
+          // validate the second funds out - failed, should not appear in the report
+          const secondFundsOut = reportRecords[fundsOutTransferId2]
+          expect(secondFundsOut).toBeUndefined() // should not return any data
+
         })
 
       expect(1).toBe(1)
