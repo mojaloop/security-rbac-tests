@@ -1,7 +1,9 @@
 FROM node:16-alpine3.15
 
-RUN apk --no-cache add g++ gcc libgcc libstdc++ linux-headers make python3
-RUN npm install --quiet node-gyp -g
+RUN apk add --no-cache -t build-dependencies python3 git make gcc g++  libtool autoconf automake \
+    && cd $(npm root -g)/npm \
+    && npm config set unsafe-perm true \
+    && npm install -g node-gyp
 
 WORKDIR /opt/test
 
