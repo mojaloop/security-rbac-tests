@@ -31,10 +31,6 @@
 
 import * as env from 'env-var'
 
-export const roleAssignmentSvcBasePath = env.get('ROLE_ASSIGNMENT_SVC_BASE_PATH')
-  .default('http://role-assignment-service')
-  .asUrlObject()
-
 // It's useful to parse this as a URL object for validation. But any query strings will be
 // discarded, only the origin and path will be used.
 const basePathUrl = env.get('ML_INGRESS_BASE_PATH')
@@ -50,32 +46,3 @@ export const username = env.get('TEST_USER_NAME')
 export const password = env.get('TEST_USER_PASSWORD')
   .default('testpassword')
   .asString()
-
-  export const centralLedgerAdminEndpoint = env.get('CENTRAL_LEDGER_ADMIN_ENDPOINT')
-  .default('http://bofportal.yourdomain.com/proxy/central-admin')
-  .asUrlObject()
-  
-  export const centralSettlementEndpoint = env.get('CENTRAL_SETTLEMENT_ENDPOINT')
-  .default('http://bofportal.yourdomain.com/proxy/central-settlements')
-  .asUrlObject()
-  
-  export const reportBasePath = env.get('REPORT_BASE_PATH')
-  .default('http://bofportal.yourdomain.com/proxy/reports')
-  .asUrlObject()
-  
-  export const sendMoneyEndpoint = env.get('SEND_MONEY_ENDPOINT')
-  .default('http://ml-connector/cc-send/sendmoney')
-  .asUrlObject()
-  
-  export const payer = env.get('TEST_PAYER')
-  .default('pm4mlsenderfsp')
-  .asString()
-
-  export const payee = env.get('TEST_PAYEE')
-  .default('pm4mlreceiverfsp')
-  .asString()
-
-  export const currency = env.get('TEST_CURRENCY')
-  .default('USD')
-  .asString()
-

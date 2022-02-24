@@ -36,7 +36,10 @@ import { v4 as uuid } from 'uuid'
 import {
   mlIngressBasePath,
   username,
-  password,
+  password
+} from '../config'
+
+import {
   payer,
   payee,
   centralLedgerAdminEndpoint,
@@ -44,7 +47,8 @@ import {
   currency,
   centralSettlementEndpoint,
   sendMoneyEndpoint
-} from '../config'
+} from './config'
+
 import login from '../login'
 import {
   TestParameters
@@ -501,7 +505,7 @@ describe('DFSP Settlements Statement Report', () => {
         'test1@test.com',
         'Test Reference funds out'
       )
-      
+
       // Get the end date + 2 mins to allow for the transfers to complete
       const endDate: string = DateTime.now().plus({ minutes: 2 }).toUTC().toISO()
 
@@ -589,7 +593,6 @@ describe('DFSP Settlements Statement Report', () => {
           // validate the second funds out - failed, should not appear in the report
           const secondFundsOut = reportRecords[fundsOutTransferId2]
           expect(secondFundsOut).toBeUndefined() // should not return any data
-
         })
 
       expect(1).toBe(1)

@@ -39,9 +39,13 @@ import {
   TestParameters
 } from './types'
 import {
-  roleAssignmentSvcBasePath,
   username
 } from '../config'
+
+import {
+  roleAssignmentSvcBasePath
+} from './config'
+
 import { CookieJar } from 'tough-cookie'
 
 export function getAllowDenyList (

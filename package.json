@@ -6,8 +6,9 @@
   "scripts": {
     "compile": "tsc --noemit",
     "test": "jest --testMatch **/test/**/*.test.ts --runInBand",
+    "test:rbac": "jest --testMatch **/test/roles_check_tests/**/*.test.ts --runInBand",
     "test:report": "jest --testMatch **/test/report_tests/**/*.test.ts --runInBand",
-    "build-types:role-assignment": "openapi-typescript https://raw.githubusercontent.com/mojaloop/role-assignment-service/master/src/interface/api.yaml --prettier-config ./.prettierrc.js --output test/types/role_assignment.ts",
+    "build-types:role-assignment": "openapi-typescript https://raw.githubusercontent.com/mojaloop/role-assignment-service/master/src/interface/api.yaml --prettier-config ./.prettierrc.js --output test/roles_check_tests/types/role_assignment.ts",
     "audit:resolve": "SHELL=sh resolve-audit --production",
     "audit:check": "SHELL=sh check-audit --production",
     "lint": "eslint ./test/**/*.ts *.js",

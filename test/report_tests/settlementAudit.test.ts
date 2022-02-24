@@ -36,7 +36,10 @@ import { v4 as uuid } from 'uuid'
 import {
   mlIngressBasePath,
   username,
-  password,
+  password
+} from '../config'
+
+import {
   payer,
   payee,
   centralLedgerAdminEndpoint,
@@ -44,7 +47,8 @@ import {
   currency,
   centralSettlementEndpoint,
   sendMoneyEndpoint
-} from '../config'
+} from './config'
+
 import login from '../login'
 import {
   TestParameters

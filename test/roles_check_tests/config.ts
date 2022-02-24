@@ -29,17 +29,8 @@
  --------------
  ******/
 
-import { components } from './types/role_assignment'
-import { Method } from 'got'
+import * as env from 'env-var'
 
-export type Users = components['schemas']['UsersGetResponse']
-export type User = components['schemas']['User'];
-export type Roles = components['schemas']['UsersIDRolesGetResponse']
-export type Role = Roles['roles'][0]
-export type RolePatch = components['schemas']['UsersIDRolesPatchRequest']
-
-export interface TestParameters {
-  role: Role;
-  url: URL;
-  method: Method;
-}
+export const roleAssignmentSvcBasePath = env.get('ROLE_ASSIGNMENT_SVC_BASE_PATH')
+  .default('http://role-assignment-service')
+  .asUrlObject()
