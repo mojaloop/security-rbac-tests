@@ -1,8 +1,8 @@
 FROM node:16-alpine3.15
 
-RUN apk add --update python make g++\
-   && rm -rf /var/cache/apk/*
-   
+RUN apk --no-cache add g++ gcc libgcc libstdc++ linux-headers make python3
+RUN npm install --quiet node-gyp -g
+
 WORKDIR /opt/test
 
 COPY . /opt/test
