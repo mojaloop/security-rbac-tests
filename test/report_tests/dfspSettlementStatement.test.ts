@@ -338,11 +338,11 @@ describe('DFSP Settlements Statement Report', () => {
 
           const payerSeventhRow: any = payerWorksheet.getRow(7)
           expect(payerSeventhRow.values[1]).toEqual('Transfer Id')
-          expect(payerSeventhRow.values[3]).toEqual('Date Time')
-          expect(payerSeventhRow.values[4]).toEqual('Process Description')
-          expect(payerSeventhRow.values[5]).toEqual('Funds In')
-          expect(payerSeventhRow.values[6]).toEqual('Funds Out')
-          expect(payerSeventhRow.values[7]).toEqual('Balance')
+          expect(payerSeventhRow.values[2]).toEqual('Date Time')
+          expect(payerSeventhRow.values[3]).toEqual('Process Description')
+          expect(payerSeventhRow.values[4]).toEqual('Funds In')
+          expect(payerSeventhRow.values[5]).toEqual('Funds Out')
+          expect(payerSeventhRow.values[6]).toEqual('Balance')
 
           const payerRecords: any = {}
 
@@ -354,23 +354,23 @@ describe('DFSP Settlements Statement Report', () => {
 
           // Validate the first funds in for payer
           const payerFirstFundsIn = payerRecords[payerFundsInTransferId]
-          const payerStartingBalance = parseFloat(payerFirstFundsIn[7].replaceAll(',', ''))
+          const payerStartingBalance = parseFloat(payerFirstFundsIn[6].replaceAll(',', ''))
           expect(payerFirstFundsIn[1]).toEqual(payerFundsInTransferId) // transferId
-          expect(payerFirstFundsIn[3]).not.toBeUndefined() // datetime
-          expect(payerFirstFundsIn[4]).toEqual('Testing funds in') // Process Description
-          expect(payerFirstFundsIn[5]).toEqual(fundsInAmount) // funds in amount
-          expect(payerFirstFundsIn[6]).toBeUndefined() // funds out amount
-          expect(payerFirstFundsIn[7]).not.toBeUndefined() // balance
+          expect(payerFirstFundsIn[2]).not.toBeUndefined() // datetime
+          expect(payerFirstFundsIn[3]).toEqual('Testing funds in') // Process Description
+          expect(payerFirstFundsIn[4]).toEqual(fundsInAmount) // funds in amount
+          expect(payerFirstFundsIn[5]).toBeUndefined() // funds out amount
+          expect(payerFirstFundsIn[6]).not.toBeUndefined() // balance
 
           // validate the first funds out after settlement
           const payerFundsOut = payerRecords[fundsOutTransferId]
           const balanceAfterFundsOut = (payerStartingBalance + parseFloat(transferAmount)).toFixed(2)
           expect(payerFundsOut[1]).toEqual(fundsOutTransferId) // transferId
-          expect(payerFundsOut[3]).not.toBeUndefined() // datetime
-          expect(payerFundsOut[4]).toEqual('Testing funds out') // Process Description
-          expect(payerFundsOut[5]).toBeUndefined() // funds out amount
-          expect(payerFundsOut[6].replaceAll(',', '')).toEqual(transferAmount) // funds in amount
-          expect(payerFundsOut[7].replaceAll(',', '')).toEqual(balanceAfterFundsOut) // balance
+          expect(payerFundsOut[2]).not.toBeUndefined() // datetime
+          expect(payerFundsOut[3]).toEqual('Testing funds out') // Process Description
+          expect(payerFundsOut[4]).toBeUndefined() // funds out amount
+          expect(payerFundsOut[5].replaceAll(',', '')).toEqual(transferAmount) // funds in amount
+          expect(payerFundsOut[6].replaceAll(',', '')).toEqual(balanceAfterFundsOut) // balance
         })
 
       // Get the latest settlement statement report for payee
@@ -406,11 +406,11 @@ describe('DFSP Settlements Statement Report', () => {
 
           const payeeSeventhRow: any = payeeWorksheet.getRow(7)
           expect(payeeSeventhRow.values[1]).toEqual('Transfer Id')
-          expect(payeeSeventhRow.values[3]).toEqual('Date Time')
-          expect(payeeSeventhRow.values[4]).toEqual('Process Description')
-          expect(payeeSeventhRow.values[5]).toEqual('Funds In')
-          expect(payeeSeventhRow.values[6]).toEqual('Funds Out')
-          expect(payeeSeventhRow.values[7]).toEqual('Balance')
+          expect(payeeSeventhRow.values[2]).toEqual('Date Time')
+          expect(payeeSeventhRow.values[3]).toEqual('Process Description')
+          expect(payeeSeventhRow.values[4]).toEqual('Funds In')
+          expect(payeeSeventhRow.values[5]).toEqual('Funds Out')
+          expect(payeeSeventhRow.values[6]).toEqual('Balance')
 
           const payeeRecords: any = {}
 
@@ -422,23 +422,23 @@ describe('DFSP Settlements Statement Report', () => {
 
           // Validate the first funds in for payee
           const payeeFirstFundsIn = payeeRecords[payeeFundsInTransferId]
-          const payeeStartingBalance = parseFloat(payeeFirstFundsIn[7].replaceAll(',', ''))
+          const payeeStartingBalance = parseFloat(payeeFirstFundsIn[6].replaceAll(',', ''))
           expect(payeeFirstFundsIn[1]).toEqual(payeeFundsInTransferId) // transferId
-          expect(payeeFirstFundsIn[3]).not.toBeUndefined() // datetime
-          expect(payeeFirstFundsIn[4]).toEqual('Testing funds in') // Process Description
-          expect(payeeFirstFundsIn[5].replaceAll(',', '')).toEqual(fundsInAmount) // funds in amount
-          expect(payeeFirstFundsIn[6]).toBeUndefined() // funds out amount
-          expect(payeeFirstFundsIn[7]).not.toBeUndefined() // balance
+          expect(payeeFirstFundsIn[2]).not.toBeUndefined() // datetime
+          expect(payeeFirstFundsIn[3]).toEqual('Testing funds in') // Process Description
+          expect(payeeFirstFundsIn[4].replaceAll(',', '')).toEqual(fundsInAmount) // funds in amount
+          expect(payeeFirstFundsIn[5]).toBeUndefined() // funds out amount
+          expect(payeeFirstFundsIn[6]).not.toBeUndefined() // balance
 
           // Validate the second funds in for payee after settlement
           const payeeFundsIn = payeeRecords[fundsInTransferId]
           const balanceAfterFundsIn = (payeeStartingBalance - parseFloat(transferAmount)).toFixed(2)
           expect(payeeFundsIn[1]).toEqual(fundsInTransferId) // transferId
-          expect(payeeFundsIn[3]).not.toBeUndefined() // datetime
-          expect(payeeFundsIn[4]).toEqual('Testing funds in') // Process Description
-          expect(payeeFundsIn[5].replaceAll(',', '')).toEqual(transferAmount) // funds in amount
-          expect(payeeFundsIn[6]).toBeUndefined() // funds out amount
-          expect(payeeFundsIn[7].replaceAll(',', '')).toEqual(balanceAfterFundsIn) // balance
+          expect(payeeFundsIn[2]).not.toBeUndefined() // datetime
+          expect(payeeFundsIn[3]).toEqual('Testing funds in') // Process Description
+          expect(payeeFundsIn[4].replaceAll(',', '')).toEqual(transferAmount) // funds in amount
+          expect(payeeFundsIn[5]).toBeUndefined() // funds out amount
+          expect(payeeFundsIn[6].replaceAll(',', '')).toEqual(balanceAfterFundsIn) // balance
         })
 
       expect(1).toBe(1)
@@ -542,11 +542,11 @@ describe('DFSP Settlements Statement Report', () => {
 
           const seventhRow: any = worksheet.getRow(7)
           expect(seventhRow.values[1]).toEqual('Transfer Id')
-          expect(seventhRow.values[3]).toEqual('Date Time')
-          expect(seventhRow.values[4]).toEqual('Process Description')
-          expect(seventhRow.values[5]).toEqual('Funds In')
-          expect(seventhRow.values[6]).toEqual('Funds Out')
-          expect(seventhRow.values[7]).toEqual('Balance')
+          expect(seventhRow.values[2]).toEqual('Date Time')
+          expect(seventhRow.values[3]).toEqual('Process Description')
+          expect(seventhRow.values[4]).toEqual('Funds In')
+          expect(seventhRow.values[5]).toEqual('Funds Out')
+          expect(seventhRow.values[6]).toEqual('Balance')
 
           const reportRecords: any = {}
 
@@ -558,33 +558,33 @@ describe('DFSP Settlements Statement Report', () => {
 
           // Validate the first funds in
           const firstFundsIn = reportRecords[fundsInTransferId1]
-          const startingBalance = parseFloat(firstFundsIn[7].replaceAll(',', ''))
+          const startingBalance = parseFloat(firstFundsIn[6].replaceAll(',', ''))
           expect(firstFundsIn[1]).toEqual(fundsInTransferId1) // transferId
-          expect(firstFundsIn[3]).not.toBeUndefined() // datetime
-          expect(firstFundsIn[4]).toEqual('Testing funds in') // Process Description
-          expect(firstFundsIn[5]).toEqual(fundsInAmount1) // funds in amount
-          expect(firstFundsIn[6]).toBeUndefined() // funds out amount
-          expect(firstFundsIn[7]).not.toBeUndefined() // balance
+          expect(firstFundsIn[2]).not.toBeUndefined() // datetime
+          expect(firstFundsIn[3]).toEqual('Testing funds in') // Process Description
+          expect(firstFundsIn[4]).toEqual(fundsInAmount1) // funds in amount
+          expect(firstFundsIn[5]).toBeUndefined() // funds out amount
+          expect(firstFundsIn[6]).not.toBeUndefined() // balance
 
           // validate the first funds out
           const firstFundsOut = reportRecords[fundsOutTransferId]
           const balanceAfterFundsOut = (startingBalance + parseFloat(fundsOutAmount1)).toFixed(2)
           expect(firstFundsOut[1]).toEqual(fundsOutTransferId) // transferId
-          expect(firstFundsOut[3]).not.toBeUndefined() // datetime
-          expect(firstFundsOut[4]).toEqual('Testing funds out') // Process Description
-          expect(firstFundsOut[5]).toBeUndefined() // funds out amount
-          expect(firstFundsOut[6].replaceAll(',', '')).toEqual(fundsOutAmount1) // funds in amount
-          expect(firstFundsOut[7].replaceAll(',', '')).toEqual(balanceAfterFundsOut) // balance
+          expect(firstFundsOut[2]).not.toBeUndefined() // datetime
+          expect(firstFundsOut[3]).toEqual('Testing funds out') // Process Description
+          expect(firstFundsOut[4]).toBeUndefined() // funds out amount
+          expect(firstFundsOut[5].replaceAll(',', '')).toEqual(fundsOutAmount1) // funds in amount
+          expect(firstFundsOut[6].replaceAll(',', '')).toEqual(balanceAfterFundsOut) // balance
 
           // validate the second funds in
           const secondFundsIn = reportRecords[fundsInTransferId2]
           const balanceAfterFundsIn = (parseFloat(balanceAfterFundsOut) - parseFloat(fundsInAmount2)).toFixed(2)
           expect(secondFundsIn[1]).toEqual(fundsInTransferId2) // transferId
-          expect(secondFundsIn[3]).not.toBeUndefined() // datetime
-          expect(secondFundsIn[4]).toEqual('Testing funds in') // Process Description
-          expect(secondFundsIn[5].replaceAll(',', '')).toEqual(fundsInAmount2) // funds in amount
-          expect(secondFundsIn[6]).toBeUndefined() // funds out amount
-          expect(secondFundsIn[7].replaceAll(',', '')).toEqual(balanceAfterFundsIn) // balance
+          expect(secondFundsIn[2]).not.toBeUndefined() // datetime
+          expect(secondFundsIn[3]).toEqual('Testing funds in') // Process Description
+          expect(secondFundsIn[4].replaceAll(',', '')).toEqual(fundsInAmount2) // funds in amount
+          expect(secondFundsIn[5]).toBeUndefined() // funds out amount
+          expect(secondFundsIn[6].replaceAll(',', '')).toEqual(balanceAfterFundsIn) // balance
 
           // validate the second funds out - failed, should not appear in the report
           const secondFundsOut = reportRecords[fundsOutTransferId2]

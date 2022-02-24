@@ -32,39 +32,39 @@
 import * as env from 'env-var'
 
 export const roleAssignmentSvcBasePath = env.get('ROLE_ASSIGNMENT_SVC_BASE_PATH')
-  .default('http://localhost:3008')
+  .default('http://role-assignment-service')
   .asUrlObject()
 
 // It's useful to parse this as a URL object for validation. But any query strings will be
 // discarded, only the origin and path will be used.
 const basePathUrl = env.get('ML_INGRESS_BASE_PATH')
-  .default('http://bofportal.test.infra.mojatest.live.internal')
+  .default('http://bofportal.yourdomain.com')
   .asUrlObject()
 export const mlIngressBasePath = `${basePathUrl.origin}${basePathUrl.pathname}`.replace(/\/*$/, '')
 export const proxyPrefix = 'proxy'
 
 export const username = env.get('TEST_USER_NAME')
-  .default('shashi')
+  .default('test1')
   .asString()
 
 export const password = env.get('TEST_USER_PASSWORD')
-  .default('Pp5uBgLXOeq61KjYZ3SpMXih4cwQgM')
+  .default('testpassword')
   .asString()
 
   export const centralLedgerAdminEndpoint = env.get('CENTRAL_LEDGER_ADMIN_ENDPOINT')
-  .default('http://bofportal.test.infra.mojatest.live.internal/proxy/central-admin')
+  .default('http://bofportal.yourdomain.com/proxy/central-admin')
   .asUrlObject()
   
   export const centralSettlementEndpoint = env.get('CENTRAL_SETTLEMENT_ENDPOINT')
-  .default('http://bofportal.test.infra.mojatest.live.internal/proxy/central-settlements')
+  .default('http://bofportal.yourdomain.com/proxy/central-settlements')
   .asUrlObject()
   
   export const reportBasePath = env.get('REPORT_BASE_PATH')
-  .default('http://bofportal.test.infra.mojatest.live.internal/proxy/reports')
+  .default('http://bofportal.yourdomain.com/proxy/reports')
   .asUrlObject()
   
   export const sendMoneyEndpoint = env.get('SEND_MONEY_ENDPOINT')
-  .default('http://test.pm4mlsenderfsp.infratestk3s.test.infra.mojatest.live/cc-send/sendmoney')
+  .default('http://ml-connector/cc-send/sendmoney')
   .asUrlObject()
   
   export const payer = env.get('TEST_PAYER')
