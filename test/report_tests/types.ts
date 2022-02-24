@@ -29,17 +29,8 @@
  --------------
  ******/
 
-import { components } from './types/role_assignment'
 import { Method } from 'got'
-
-export type Users = components['schemas']['UsersGetResponse']
-export type User = components['schemas']['User'];
-export type Roles = components['schemas']['UsersIDRolesGetResponse']
-export type Role = Roles['roles'][0]
-export type RolePatch = components['schemas']['UsersIDRolesPatchRequest']
-
 export interface TestParameters {
-  role: Role;
   url: URL;
   method: Method;
 }

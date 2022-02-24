@@ -1,12 +1,14 @@
 {
   "name": "security-rbac-tests",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "RBAC tests",
   "main": "index.js",
   "scripts": {
     "compile": "tsc --noemit",
     "test": "jest --testMatch **/test/**/*.test.ts --runInBand",
-    "build-types:role-assignment": "openapi-typescript https://raw.githubusercontent.com/mojaloop/role-assignment-service/master/src/interface/api.yaml --prettier-config ./.prettierrc.js --output test/types/role_assignment.ts",
+    "test:rbac": "jest --testMatch **/test/roles_check_tests/**/*.test.ts --runInBand",
+    "test:report": "jest --testMatch **/test/report_tests/**/*.test.ts --runInBand",
+    "build-types:role-assignment": "openapi-typescript https://raw.githubusercontent.com/mojaloop/role-assignment-service/master/src/interface/api.yaml --prettier-config ./.prettierrc.js --output test/roles_check_tests/types/role_assignment.ts",
     "audit:resolve": "SHELL=sh resolve-audit --production",
     "audit:check": "SHELL=sh check-audit --production",
     "lint": "eslint ./test/**/*.ts *.js",
@@ -17,14 +19,22 @@
   "license": "ISC",
   "dependencies": {
     "@types/jest": "^27.4.0",
+    "@types/luxon": "^2.0.9",
     "@types/tough-cookie": "^4.0.1",
+    "@types/uuid": "^8.3.4",
+    "axios": "^0.26.0",
     "env-var": "^7.1.1",
+    "exceljs": "^4.3.0",
+    "fs": "0.0.1-security",
     "got": "11.8.3",
     "jest": "^27.4.7",
+    "luxon": "^2.3.0",
     "node-html-parser": "^5.2.0",
+    "stream": "0.0.2",
     "tough-cookie": "^4.0.0",
     "ts-jest": "^27.1.2",
-    "typescript": "^4.5.4"
+    "typescript": "^4.5.4",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.10.2",
@@ -38,7 +48,6 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-promise": "^6.0.0",
-    "eslint-plugin-standard": "^5.0.0",
     "npm-audit-resolver": "^3.0.0-6",
     "openapi-typescript": "^5.1.0"
   }

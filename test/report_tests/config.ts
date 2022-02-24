@@ -29,17 +29,32 @@
  --------------
  ******/
 
-import { components } from './types/role_assignment'
-import { Method } from 'got'
+import * as env from 'env-var'
 
-export type Users = components['schemas']['UsersGetResponse']
-export type User = components['schemas']['User'];
-export type Roles = components['schemas']['UsersIDRolesGetResponse']
-export type Role = Roles['roles'][0]
-export type RolePatch = components['schemas']['UsersIDRolesPatchRequest']
+export const centralLedgerAdminEndpoint = env.get('CENTRAL_LEDGER_ADMIN_ENDPOINT')
+  .default('http://bofportal.yourdomain.com/proxy/central-admin')
+  .asUrlObject()
 
-export interface TestParameters {
-  role: Role;
-  url: URL;
-  method: Method;
-}
+export const centralSettlementEndpoint = env.get('CENTRAL_SETTLEMENT_ENDPOINT')
+  .default('http://bofportal.yourdomain.com/proxy/central-settlements')
+  .asUrlObject()
+
+export const reportBasePath = env.get('REPORT_BASE_PATH')
+  .default('http://bofportal.yourdomain.com/proxy/reports')
+  .asUrlObject()
+
+export const sendMoneyEndpoint = env.get('SEND_MONEY_ENDPOINT')
+  .default('http://ml-connector/cc-send/sendmoney')
+  .asUrlObject()
+
+export const payer = env.get('TEST_PAYER')
+  .default('pm4mlsenderfsp')
+  .asString()
+
+export const payee = env.get('TEST_PAYEE')
+  .default('pm4mlreceiverfsp')
+  .asString()
+
+export const currency = env.get('TEST_CURRENCY')
+  .default('USD')
+  .asString()
