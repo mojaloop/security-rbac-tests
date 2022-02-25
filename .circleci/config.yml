@@ -390,7 +390,7 @@ workflows:
             - build-local
             # - license-scan
             # - image-scan
-            - audit-licenses
+            # - audit-licenses
             # - linting-check
             - vulnerability-check
           filters:
