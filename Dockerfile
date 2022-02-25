@@ -30,6 +30,6 @@ RUN ln -sf /dev/stdout ./logs/combined.log
 RUN adduser -D user1
 USER user1
 
-COPY --chown=user1 --from=builder /opt/test
+COPY --chown=user1 --from=builder /opt/test .
 
 CMD npm run test
