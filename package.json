@@ -30,7 +30,6 @@
     "jest": "^27.4.7",
     "luxon": "^2.3.0",
     "node-html-parser": "^5.2.0",
-    "sleep": "^6.3.0",
     "stream": "0.0.2",
     "tough-cookie": "^4.0.0",
     "ts-jest": "^27.1.2",

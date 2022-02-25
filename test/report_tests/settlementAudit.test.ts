@@ -29,7 +29,7 @@
  ******/
 
 import { DateTime } from 'luxon'
-import sleep from 'sleep'
+// import sleep from 'sleep'
 import Excel, { Worksheet } from 'exceljs'
 import { v4 as uuid } from 'uuid'
 
@@ -308,7 +308,7 @@ describe('Settlements Audit Report', () => {
       const endDate: string = DateTime.now().plus({ minutes: 2 }).toUTC().toISO()
 
       // allow the transfers to complete
-      sleep.sleep(5)
+      // sleep.sleep(5)
 
       // Get the latest settlement audit report
       const getSettlementAuditReportParams: TestParameters = {
@@ -531,7 +531,7 @@ describe('Settlements Audit Report', () => {
       const endDate: string = DateTime.now().plus({ minutes: 2 }).toUTC().toISO()
 
       // allow the transfers to complete
-      sleep.sleep(5)
+      // sleep.sleep(5)
 
       // Get the latest settlement audit report
       const getSettlementAuditReportParams: TestParameters = {

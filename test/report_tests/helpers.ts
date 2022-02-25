@@ -132,7 +132,12 @@ export async function fundsOut ({ url, method }
   return transferId
 }
 
+function delay(time: number) {
+  return new Promise(resolve => setTimeout(resolve, time))
+} 
+
 export async function getSettlementAuditReport ({ url, method } : TestParameters, cookieJar: CookieJar): Promise<any> {
+  await delay(5000)
   const downloadStream = await got.stream({
     url,
     method,
@@ -152,6 +157,7 @@ export async function getSettlementAuditReport ({ url, method } : TestParameters
 
 export async function getDfspSettlementStatementReport (
   { url, method } : TestParameters, cookieJar: CookieJar): Promise<any> {
+    await delay(5000)  
   const downloadStream = await got.stream({
     url,
     method,
