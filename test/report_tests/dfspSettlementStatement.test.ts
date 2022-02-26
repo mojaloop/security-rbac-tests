@@ -29,7 +29,6 @@
  ******/
 
 import { DateTime } from 'luxon'
-// import sleep from 'sleep'
 import Excel from 'exceljs'
 import { v4 as uuid } from 'uuid'
 
@@ -58,7 +57,7 @@ import {
   getParticipant,
   fundsIn,
   fundsOut,
-  getDfspSettlementStatementReport,
+  getReport,
   closeCurrentOpenSettlementWindow,
   getCurrentOpenSettlementWindow,
   sendMoney,
@@ -307,18 +306,15 @@ describe('DFSP Settlements Statement Report', () => {
       // Get the end date + 2 mins to allow for the transfers to complete
       const endDate: string = DateTime.now().plus({ minutes: 2 }).toUTC().toISO()
 
-      // allow the transfers to complete
-      // sleep.sleep(5)
-
       // Get the latest settlement statement report for payer
       const getPayerSettlementAuditReportParams: TestParameters = {
         url: new URL(`${reportBasePath}/dfspSettlementStatement?dfspId=${payer}&startDate=${startDate}&endDate=${endDate}&format=xlsx`),
         method: 'GET'
       }
-      const payerReportFile = await getDfspSettlementStatementReport(getPayerSettlementAuditReportParams, cookieJarObj)
+      const payerReportData = await getReport(getPayerSettlementAuditReportParams, cookieJarObj)
 
       const payerWorkbook = new Excel.Workbook()
-      await payerWorkbook.xlsx.readFile(payerReportFile)
+      await payerWorkbook.xlsx.read(payerReportData)
         .then(() => {
           const payerWorksheet = payerWorkbook.getWorksheet(`${payer}-${currency}`)
 
@@ -382,10 +378,10 @@ describe('DFSP Settlements Statement Report', () => {
         url: new URL(`${reportBasePath}/dfspSettlementStatement?dfspId=${payee}&startDate=${startDate}&endDate=${endDate}&format=xlsx`),
         method: 'GET'
       }
-      const payeeReportFile = await getDfspSettlementStatementReport(getPayeeSettlementAuditReportParams, cookieJarObj)
+      const payeeReportData = await getReport(getPayeeSettlementAuditReportParams, cookieJarObj)
 
       const payeeWorkbook = new Excel.Workbook()
-      await payeeWorkbook.xlsx.readFile(payeeReportFile)
+      await payeeWorkbook.xlsx.read(payeeReportData)
         .then(() => {
           const payeeWorksheet = payeeWorkbook.getWorksheet(`${payee}-${currency}`)
 
@@ -509,24 +505,19 @@ describe('DFSP Settlements Statement Report', () => {
       // Get the end date + 2 mins to allow for the transfers to complete
       const endDate: string = DateTime.now().plus({ minutes: 2 }).toUTC().toISO()
 
-      // allow the transfers to complete
-      // sleep.sleep(5)
-
       // Get the latest settlement audit report
       const getDfspSettlementStatementReportParams: TestParameters = {
         url: new URL(`${reportBasePath}/dfspSettlementStatement?dfspId=${payer}&startDate=${startDate}&endDate=${endDate}&format=xlsx`),
         method: 'GET'
       }
-      const reportFile = await getDfspSettlementStatementReport(getDfspSettlementStatementReportParams, cookieJarObj)
-      // sleep.sleep(15)
+      const reportData = await getReport(getDfspSettlementStatementReportParams, cookieJarObj)
 
       const workbook = new Excel.Workbook()
-      await workbook.xlsx.readFile(reportFile)
+      await workbook.xlsx.read(reportData)
         .then(() => {
           const worksheet = workbook.getWorksheet(`${payer}-${currency}`)
 
           const firstRow:any = worksheet.getRow(1)
-          // console.log(`${firstRow.values[1]} ${firstRow.values[2]}`)
           expect(firstRow.values[1]).toEqual('DFSP')
 
           const secondRow: any = worksheet.getRow(2)

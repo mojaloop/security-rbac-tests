@@ -29,7 +29,6 @@
  ******/
 
 import { DateTime } from 'luxon'
-// import sleep from 'sleep'
 import Excel, { Worksheet } from 'exceljs'
 import { v4 as uuid } from 'uuid'
 
@@ -58,7 +57,7 @@ import {
   getParticipant,
   fundsIn,
   fundsOut,
-  getSettlementAuditReport,
+  getReport,
   closeCurrentOpenSettlementWindow,
   getCurrentOpenSettlementWindow,
   sendMoney,
@@ -307,18 +306,15 @@ describe('Settlements Audit Report', () => {
       // Get the end date + 2 mins to allow for the transfers to complete
       const endDate: string = DateTime.now().plus({ minutes: 2 }).toUTC().toISO()
 
-      // allow the transfers to complete
-      // sleep.sleep(5)
-
       // Get the latest settlement audit report
       const getSettlementAuditReportParams: TestParameters = {
         url: new URL(`${reportBasePath}/settlementAudit?startDate=${startDate}&endDate=${endDate}&format=xlsx`),
         method: 'GET'
       }
-      const reportFile = await getSettlementAuditReport(getSettlementAuditReportParams, cookieJarObj)
+      const reportData = await getReport(getSettlementAuditReportParams, cookieJarObj)
 
       const workbook = new Excel.Workbook()
-      await workbook.xlsx.readFile(reportFile)
+      await workbook.xlsx.read(reportData)
         .then(() => {
           const payerWorksheet = workbook.getWorksheet(`${payer}-${currency}`)
           const payeeWorksheet = workbook.getWorksheet(`${payee}-${currency}`)
@@ -530,18 +526,15 @@ describe('Settlements Audit Report', () => {
       // Get the end date + 2 mins to allow for the transfers to complete
       const endDate: string = DateTime.now().plus({ minutes: 2 }).toUTC().toISO()
 
-      // allow the transfers to complete
-      // sleep.sleep(5)
-
       // Get the latest settlement audit report
       const getSettlementAuditReportParams: TestParameters = {
         url: new URL(`${reportBasePath}/settlementAudit?startDate=${startDate}&endDate=${endDate}&format=xlsx`),
         method: 'GET'
       }
-      const reportFile = await getSettlementAuditReport(getSettlementAuditReportParams, cookieJarObj)
+      const reportData = await getReport(getSettlementAuditReportParams, cookieJarObj)
 
       const workbook = new Excel.Workbook()
-      await workbook.xlsx.readFile(reportFile)
+      await workbook.xlsx.read(reportData)
         .then(() => {
           // Check if the report has worksheet for every participant-currency account
           const allReportSheets :string[] = []

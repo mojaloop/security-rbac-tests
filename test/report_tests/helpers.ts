@@ -29,10 +29,7 @@
  ******/
 
 import { v4 as uuid } from 'uuid'
-import { createWriteStream } from 'fs'
-import stream from 'stream'
-import { promisify } from 'util'
-import axios from 'axios'
+import axios, { AxiosRequestConfig } from 'axios'
 
 import got, { OptionsOfJSONResponseBody } from 'got'
 import {
@@ -40,7 +37,6 @@ import {
 } from './types'
 
 import { CookieJar } from 'tough-cookie'
-const pipeline = promisify(stream.pipeline)
 
 const GOT_JSON_OPTS: OptionsOfJSONResponseBody = {
   isStream: false,
@@ -132,47 +128,22 @@ export async function fundsOut ({ url, method }
   return transferId
 }
 
-function delay(time: number) {
+function delay (time: number) {
   return new Promise(resolve => setTimeout(resolve, time))
-} 
-
-export async function getSettlementAuditReport ({ url, method } : TestParameters, cookieJar: CookieJar): Promise<any> {
-  await delay(5000)
-  const downloadStream = await got.stream({
-    url,
-    method,
-    cookieJar
-  })
-  const reportFile = 'settlementAuditReport.xlsx'
-  const fileWriterStream = createWriteStream(reportFile)
-
-  try {
-    await pipeline(downloadStream, fileWriterStream)
-    console.log(`File downloaded to ${reportFile}`)
-  } catch (error) {
-    console.error(`Something went wrong. ${error}`)
-  }
-  return reportFile
 }
 
-export async function getDfspSettlementStatementReport (
-  { url, method } : TestParameters, cookieJar: CookieJar): Promise<any> {
-    await delay(5000)  
-  const downloadStream = await got.stream({
-    url,
-    method,
-    cookieJar
-  })
-  const reportFile = 'dfspSettlementStatementReport.xlsx'
-  const fileWriterStream = createWriteStream(reportFile)
+export async function getReport ({ url } : TestParameters, cookieJar: CookieJar): Promise<any> {
+  await delay(5000)
 
-  try {
-    await pipeline(downloadStream, fileWriterStream)
-    console.log(`File downloaded to ${reportFile}`)
-  } catch (error) {
-    console.error(`Something went wrong. ${error}`)
+  const cookie = await cookieJar.getCookieString(url.toString())
+
+  const options:AxiosRequestConfig = {
+    url: url.toString(),
+    headers: { Cookie: cookie },
+    responseType: 'stream'
   }
-  return reportFile
+  const response = await axios.request(options)
+  return response.data
 }
 
 export async function closeCurrentOpenSettlementWindow ({ url, method }
