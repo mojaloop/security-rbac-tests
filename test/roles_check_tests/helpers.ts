@@ -36,6 +36,8 @@ import {
   Roles,
   Role,
   RolePatch,
+  Participants,
+  ParticipantPatch,
   TestParameters
 } from './types'
 import {
@@ -97,6 +99,27 @@ export async function clearUserRoles (id: User['id']) {
   }
 }
 
+export async function clearUserParticipants (id: User['id']) {
+  const response = await got.get<Participants>(
+    `${roleAssignmentSvcBasePath}/users/${id}/participants`,
+    GOT_JSON_OPTS
+  )
+  expect(response.statusCode).toEqual(200)
+  if (response.body.participants.length > 0) {
+    const body: ParticipantPatch = {
+      participantOperations: response.body.participants.map((participant) => ({
+        participantId: participant,
+        action: 'delete'
+      }))
+    }
+    await got.patch<null>(`${roleAssignmentSvcBasePath}/users/${id}/roles`, {
+      ...GOT_JSON_OPTS,
+      body: JSON.stringify(body)
+    })
+    expect(response.statusCode).toEqual(200)
+  }
+}
+
 export async function appendUserRole (id: User['id'], role: Role) {
   const body: RolePatch = {
     roleOperations: [{
@@ -105,6 +128,18 @@ export async function appendUserRole (id: User['id'], role: Role) {
     }]
   }
   await got.patch<null>(`${roleAssignmentSvcBasePath}/users/${id}/roles`, {
+    ...GOT_JSON_OPTS,
+    body: JSON.stringify(body)
+  })
+}
+export async function appendUserParticipant (id: User['id'], participantId: string) {
+  const body: ParticipantPatch = {
+    participantOperations: [{
+      participantId: participantId,
+      action: 'insert'
+    }]
+  }
+  await got.patch<null>(`${roleAssignmentSvcBasePath}/users/${id}/participants`, {
     ...GOT_JSON_OPTS,
     body: JSON.stringify(body)
   })

@@ -37,6 +37,8 @@ export type User = components['schemas']['User'];
 export type Roles = components['schemas']['UsersIDRolesGetResponse']
 export type Role = Roles['roles'][0]
 export type RolePatch = components['schemas']['UsersIDRolesPatchRequest']
+export type ParticipantPatch = components['schemas']['UsersIDParticipantsPatchRequest']
+export type Participants = components['schemas']['UsersIDParticipantsGetResponse']
 
 export interface TestParameters {
   role: Role;
