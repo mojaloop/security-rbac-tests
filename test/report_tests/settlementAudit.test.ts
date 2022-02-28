@@ -48,10 +48,16 @@ import {
   sendMoneyEndpoint
 } from './config'
 
+import { getUser, appendUserRole, clearUserRoles } from '../roles_check_tests/helpers'
+
 import login from '../login'
 import {
   TestParameters
 } from './types'
+
+import {
+  User
+} from '../roles_check_tests/types'
 
 import {
   getParticipant,
@@ -67,11 +73,19 @@ import {
 } from './helpers'
 import { CookieJar } from 'tough-cookie'
 
+let testUser: User
 let cookieJarObj: CookieJar
 
 beforeAll(async () => {
+  const user = <User> await getUser()
   const { cookieJar } = await login(username, password, mlIngressBasePath)
   cookieJarObj = cookieJar
+  testUser = user!
+  await appendUserRole(user?.id, 'financeManager')
+})
+
+afterAll(async () => {
+  await clearUserRoles(testUser?.id)
 })
 
 describe('Settlements Audit Report', () => {
