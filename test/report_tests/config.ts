@@ -43,8 +43,12 @@ export const reportBasePath = env.get('REPORT_BASE_PATH')
   .default('http://bofportal.yourdomain.com/proxy/reports')
   .asUrlObject()
 
-export const sendMoneyEndpoint = env.get('SEND_MONEY_ENDPOINT')
-  .default('http://ml-connector/cc-send/sendmoney')
+export const sendMoneyPayerEndpoint = env.get('PAYER_SEND_MONEY_ENDPOINT')
+  .default('http://ml-connector-payer/cc-send/sendmoney')
+  .asUrlObject()
+
+export const sendMoneyPayeeEndpoint = env.get('PAYEE_SEND_MONEY_ENDPOINT')
+  .default('http://ml-connector-payee/cc-send/sendmoney')
   .asUrlObject()
 
 export const payer = env.get('TEST_PAYER')
@@ -53,6 +57,14 @@ export const payer = env.get('TEST_PAYER')
 
 export const payee = env.get('TEST_PAYEE')
   .default('pm4mlreceiverfsp')
+  .asString()
+
+export const payerMSISDN = env.get('TEST_PAYER_MSISDN')
+  .default('25644444444')
+  .asString()
+
+export const payeeMSISDN = env.get('TEST_PAYEE_MSISDN')
+  .default('25633333333')
   .asString()
 
 export const currency = env.get('TEST_CURRENCY')

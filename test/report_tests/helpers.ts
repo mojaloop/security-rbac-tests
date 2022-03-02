@@ -176,7 +176,33 @@ export async function getCurrentOpenSettlementWindow ({ url, method }
   return response.body
 }
 
-export async function sendMoney (options: any): Promise<any> {
+export async function sendMoney (url: string, payerMSISDN: string, payeeMSISDN: string,
+  currency: string, amount: string): Promise<any> {
+  const transferRequest = {
+    from: {
+      displayName: 'PayeeFirst PayerLast',
+      firstName: 'PayeeFirst',
+      idType: 'MSISDN',
+      idValue: payerMSISDN // '25633333333'
+    },
+    to: {
+      idType: 'MSISDN',
+      idValue: payeeMSISDN // '25644444444'
+    },
+    amountType: 'SEND',
+    currency,
+    amount,
+    transactionType: 'TRANSFER',
+    note: 'test payment',
+    homeTransactionId: uuid()
+  }
+
+  const options: AxiosRequestConfig = {
+    url,
+    method: 'POST',
+    data: JSON.stringify(transferRequest),
+    headers: { 'Content-Type': 'application/json' }
+  }
   const response = await axios(options)
   return response.data
 }
