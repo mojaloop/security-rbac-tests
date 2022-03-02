@@ -30,7 +30,6 @@
 
 import { DateTime } from 'luxon'
 import Excel, { Worksheet } from 'exceljs'
-import { v4 as uuid } from 'uuid'
 
 import {
   mlIngressBasePath,
@@ -41,11 +40,13 @@ import {
 import {
   payer,
   payee,
+  payerMSISDN,
+  payeeMSISDN,
   centralLedgerAdminEndpoint,
   reportBasePath,
   currency,
   centralSettlementEndpoint,
-  sendMoneyEndpoint
+  sendMoneyPayerEndpoint
 } from './config'
 
 import { getUser, appendUserRole, clearUserRoles } from '../roles_check_tests/helpers'
@@ -155,32 +156,7 @@ describe('Settlements Audit Report', () => {
 
       // Run a transfer between payerfsp and payeefsp
       const transferAmount = '12.05'
-      const transferRequest = {
-        from: {
-          displayName: 'PayerFirst PayerLast',
-          firstName: 'PayerFirst',
-          idType: 'MSISDN',
-          idValue: '25644444444'
-        },
-        to: {
-          idType: 'MSISDN',
-          idValue: '25633333333'
-        },
-        amountType: 'SEND',
-        currency,
-        amount: transferAmount,
-        transactionType: 'TRANSFER',
-        note: 'test payment',
-        homeTransactionId: uuid()
-      }
-
-      const options = {
-        url: sendMoneyEndpoint.toString(),
-        method: 'POST',
-        data: JSON.stringify(transferRequest),
-        headers: { 'Content-Type': 'application/json' }
-      }
-      const transferResponse = await sendMoney(options)
+      const transferResponse = await sendMoney(sendMoneyPayerEndpoint.toString(), payerMSISDN, payeeMSISDN, currency, transferAmount)
       expect(transferResponse.currentState).toEqual('COMPLETED')
 
       // Get the current open window after transfer
