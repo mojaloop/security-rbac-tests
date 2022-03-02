@@ -156,7 +156,7 @@ const validateDfspSettlementReport = (worksheet: Excel.Worksheet, settlementWind
   }
 }
 
-describe('DFSP Settlements Statement Report', () => {
+describe('DFSP Settlements Report', () => {
   describe('Happy Path', () => {
     it('Run a transfer, settle a settlement and extract the report', async () => {
       // Do funds in for payer and payee to get the balance
