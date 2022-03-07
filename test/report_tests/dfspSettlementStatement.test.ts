@@ -46,10 +46,18 @@ import {
   reportBasePath,
   currency,
   centralSettlementEndpoint,
-  sendMoneyPayerEndpoint
+  payerBackendBasePath,
+  payeeBackendBasePath,
+  accountLookupSvcBasePath
 } from './config'
 
-import { getUser, appendUserRole, clearUserRoles, appendUserParticipant, clearUserParticipants } from '../roles_check_tests/helpers'
+import {
+  getUser,
+  appendUserRole,
+  clearUserRoles,
+  appendUserParticipant,
+  clearUserParticipants
+} from '../roles_check_tests/helpers'
 
 import login from '../login'
 import {
@@ -70,7 +78,9 @@ import {
   sendMoney,
   createSettlement,
   putSettlement,
-  getSettlement
+  getSettlement,
+  addParticipant,
+  registerParticipantMSISDN
 } from './helpers'
 import { CookieJar } from 'tough-cookie'
 
@@ -158,10 +168,24 @@ describe('DFSP Settlements Statement Report', () => {
 
       await closeCurrentOpenSettlementWindow(closeWindowParams, cookieJarObj)
 
+      // Add payer and payee to accountlookup service
+      await addParticipant(accountLookupSvcBasePath, payer, payerMSISDN, currency)
+      await addParticipant(accountLookupSvcBasePath, payee, payeeMSISDN, currency)
+
+      // Register the fsp MSISDNs
+      await registerParticipantMSISDN(payerBackendBasePath, payer, payerMSISDN)
+      await registerParticipantMSISDN(payeeBackendBasePath, payee, payeeMSISDN)
+
       // Run a transfer between payerfsp and payeefsp
       const transferAmount = '12.05'
-      const transferResponse = await sendMoney(sendMoneyPayerEndpoint.toString(), payerMSISDN, payeeMSISDN, currency, transferAmount)
-      expect(transferResponse.currentState).toEqual('COMPLETED')
+      const transferResponse = await sendMoney(
+        `${payerBackendBasePath}/scenarios`,
+        payerMSISDN,
+        payeeMSISDN,
+        currency,
+        transferAmount
+      )
+      expect(transferResponse.scenario2.result.fulfil.transferState).toEqual('COMMITTED')
 
       // Get the current open window after transfer
       openWindow = await getCurrentOpenSettlementWindow(openWindowParams, cookieJarObj)
@@ -434,8 +458,6 @@ describe('DFSP Settlements Statement Report', () => {
           expect(payeeFundsIn[5]).toBeUndefined() // funds out amount
           expect(payeeFundsIn[6].replaceAll(',', '')).toEqual(balanceAfterFundsIn) // balance
         })
-
-      expect(1).toBe(1)
     })
     it('Run funds in and out, run the report ', async () => {
       // Get the start date
@@ -579,8 +601,6 @@ describe('DFSP Settlements Statement Report', () => {
           const secondFundsOut = reportRecords[fundsOutTransferId2]
           expect(secondFundsOut).toBeUndefined() // should not return any data
         })
-
-      expect(1).toBe(1)
     })
   })
 })

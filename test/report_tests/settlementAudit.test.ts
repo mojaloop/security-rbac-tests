@@ -46,7 +46,9 @@ import {
   reportBasePath,
   currency,
   centralSettlementEndpoint,
-  sendMoneyPayerEndpoint
+  payerBackendBasePath,
+  payeeBackendBasePath,
+  accountLookupSvcBasePath
 } from './config'
 
 import { getUser, appendUserRole, clearUserRoles } from '../roles_check_tests/helpers'
@@ -70,7 +72,9 @@ import {
   sendMoney,
   createSettlement,
   putSettlement,
-  getSettlement
+  getSettlement,
+  addParticipant,
+  registerParticipantMSISDN
 } from './helpers'
 import { CookieJar } from 'tough-cookie'
 
@@ -154,10 +158,24 @@ describe('Settlements Audit Report', () => {
 
       await closeCurrentOpenSettlementWindow(closeWindowParams, cookieJarObj)
 
+      // Add payer and payee to accountlookup service
+      await addParticipant(accountLookupSvcBasePath, payer, payerMSISDN, currency)
+      await addParticipant(accountLookupSvcBasePath, payee, payeeMSISDN, currency)
+
+      // Register the fsp MSISDNs
+      await registerParticipantMSISDN(payerBackendBasePath, payer, payerMSISDN)
+      await registerParticipantMSISDN(payeeBackendBasePath, payee, payeeMSISDN)
+
       // Run a transfer between payerfsp and payeefsp
       const transferAmount = '12.05'
-      const transferResponse = await sendMoney(sendMoneyPayerEndpoint.toString(), payerMSISDN, payeeMSISDN, currency, transferAmount)
-      expect(transferResponse.currentState).toEqual('COMPLETED')
+      const transferResponse = await sendMoney(
+        `${payerBackendBasePath}/scenarios`,
+        payerMSISDN,
+        payeeMSISDN,
+        currency,
+        transferAmount
+      )
+      expect(transferResponse.scenario2.result.fulfil.transferState).toEqual('COMMITTED')
 
       // Get the current open window after transfer
       openWindow = await getCurrentOpenSettlementWindow(openWindowParams, cookieJarObj)
@@ -435,8 +453,6 @@ describe('Settlements Audit Report', () => {
           expect(payeeFundsIn[8]).toBeUndefined() // funds out amount
           expect(payeeFundsIn[9].replaceAll(',', '')).toEqual(balanceAfterFundsIn) // balance
         })
-
-      expect(1).toBe(1)
     })
     it('Run funds in and out, run the report', async () => {
       // Get the start date
@@ -624,8 +640,6 @@ describe('Settlements Audit Report', () => {
           expect(secondFundsOut[8].replaceAll(',', '')).toEqual(fundsOutAmount2) // funds in amount
           expect(secondFundsOut[9].replaceAll(',', '')).toEqual(balanceAfterFundsOut2) // balance
         })
-
-      expect(1).toBe(1)
     })
   })
 })

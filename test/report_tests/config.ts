@@ -43,13 +43,17 @@ export const reportBasePath = env.get('REPORT_BASE_PATH')
   .default('http://bofportal.yourdomain.com/proxy/reports')
   .asUrlObject()
 
-export const sendMoneyPayerEndpoint = env.get('PAYER_SEND_MONEY_ENDPOINT')
-  .default('http://ml-connector-payer/cc-send/sendmoney')
-  .asUrlObject()
+export const accountLookupSvcBasePath = env.get('ACCOUNT_LOOKUP_SERVICE_BASE_PATH')
+  .default('http://account-lookup-service')
+  .asString()
 
-export const sendMoneyPayeeEndpoint = env.get('PAYEE_SEND_MONEY_ENDPOINT')
-  .default('http://ml-connector-payee/cc-send/sendmoney')
-  .asUrlObject()
+export const payerBackendBasePath = env.get('PAYER_BACKEND_BASE_PATH')
+  .default('http://sim-payerfsp-backend')
+  .asString()
+
+export const payeeBackendBasePath = env.get('PAYEE_BACKEND_BASE_PATH')
+  .default('http://sim-payeefsp-backend')
+  .asString()
 
 export const payer = env.get('TEST_PAYER')
   .default('pm4mlsenderfsp')
