@@ -45,11 +45,18 @@ import {
   reportBasePath,
   currency,
   centralSettlementEndpoint,
-  sendMoneyPayerEndpoint,
-  sendMoneyPayeeEndpoint
+  payerBackendBasePath,
+  payeeBackendBasePath,
+  accountLookupSvcBasePath
 } from './config'
 
-import { getUser, appendUserRole, clearUserRoles, appendUserParticipant, clearUserParticipants } from '../roles_check_tests/helpers'
+import {
+  getUser,
+  appendUserRole,
+  clearUserRoles,
+  appendUserParticipant,
+  clearUserParticipants
+} from '../roles_check_tests/helpers'
 
 import login from '../login'
 import {
@@ -70,7 +77,9 @@ import {
   sendMoney,
   createSettlement,
   putSettlement,
-  getSettlement
+  getSettlement,
+  addParticipant,
+  registerParticipantMSISDN
 } from './helpers'
 import { CookieJar } from 'tough-cookie'
 
@@ -190,25 +199,53 @@ describe('DFSP Settlements Report', () => {
 
       await closeCurrentOpenSettlementWindow(closeWindowParams, cookieJarObj)
 
+      // Add payer and payee to accountlookup service
+      await addParticipant(accountLookupSvcBasePath, payer, payerMSISDN, currency)
+      await addParticipant(accountLookupSvcBasePath, payee, payeeMSISDN, currency)
+
+      // Register the fsp MSISDNs
+      await registerParticipantMSISDN(payerBackendBasePath, payer, payerMSISDN)
+      await registerParticipantMSISDN(payeeBackendBasePath, payee, payeeMSISDN)
+
       // Run a transfer between payerfsp and payeefsp
       const transferAmount1 = '11.95' // payer to payee
       const transferAmount2 = '7.24' // payer to payee
       const transferAmount3 = '4.68' // payee to payer
       const totalSentAmount = (parseFloat(transferAmount1) + parseFloat(transferAmount2)).toFixed(2)
-      const totalNetAmount = (parseFloat(transferAmount1) + parseFloat(transferAmount2) + parseFloat(transferAmount3)).toFixed(2)
-      const netAmount = (parseFloat(transferAmount1) + parseFloat(transferAmount2) - parseFloat(transferAmount3)).toFixed(2)
+      const totalNetAmount = (parseFloat(transferAmount1) + parseFloat(transferAmount2) +
+                              parseFloat(transferAmount3)).toFixed(2)
+      const netAmount = (parseFloat(transferAmount1) + parseFloat(transferAmount2) -
+                              parseFloat(transferAmount3)).toFixed(2)
 
       // Send money from payer to payee
-      const transferResponse1 = await sendMoney(sendMoneyPayerEndpoint.toString(), payerMSISDN, payeeMSISDN, currency, transferAmount1)
-      expect(transferResponse1.currentState).toEqual('COMPLETED')
+      const transferResponse1 = await sendMoney(
+        `${payerBackendBasePath}/scenarios`,
+        payerMSISDN,
+        payeeMSISDN,
+        currency,
+        transferAmount1
+      )
+      expect(transferResponse1.scenario2.result.fulfil.transferState).toEqual('COMMITTED')
 
       // Send money from payer to payee
-      const transferResponse2 = await sendMoney(sendMoneyPayerEndpoint.toString(), payerMSISDN, payeeMSISDN, currency, transferAmount2)
-      expect(transferResponse2.currentState).toEqual('COMPLETED')
+      const transferResponse2 = await sendMoney(
+        `${payerBackendBasePath}/scenarios`,
+        payerMSISDN,
+        payeeMSISDN,
+        currency,
+        transferAmount2
+      )
+      expect(transferResponse2.scenario2.result.fulfil.transferState).toEqual('COMMITTED')
 
       // Send money from payee to payer
-      const transferResponse3 = await sendMoney(sendMoneyPayeeEndpoint.toString(), payeeMSISDN, payerMSISDN, currency, transferAmount3)
-      expect(transferResponse3.currentState).toEqual('COMPLETED')
+      const transferResponse3 = await sendMoney(
+        `${payeeBackendBasePath}/scenarios`,
+        payeeMSISDN,
+        payerMSISDN,
+        currency,
+        transferAmount3
+      )
+      expect(transferResponse3.scenario2.result.fulfil.transferState).toEqual('COMMITTED')
 
       // Get the current open window after transfer
       openWindow = await getCurrentOpenSettlementWindow(openWindowParams, cookieJarObj)

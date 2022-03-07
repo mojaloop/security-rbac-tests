@@ -30,6 +30,7 @@
 
 import { v4 as uuid } from 'uuid'
 import axios, { AxiosRequestConfig } from 'axios'
+import { DateTime } from 'luxon'
 
 import got, { OptionsOfJSONResponseBody } from 'got'
 import {
@@ -178,25 +179,40 @@ export async function getCurrentOpenSettlementWindow ({ url, method }
 
 export async function sendMoney (url: string, payerMSISDN: string, payeeMSISDN: string,
   currency: string, amount: string): Promise<any> {
-  const transferRequest = {
-    from: {
-      displayName: 'PayeeFirst PayerLast',
-      firstName: 'PayeeFirst',
-      idType: 'MSISDN',
-      idValue: payerMSISDN // '25633333333'
+  const transferRequest = [
+    {
+      name: 'scenario1',
+      operation: 'postTransfers',
+      body: {
+        from: {
+          displayName: 'FSPFirst FSPLast',
+          idType: 'MSISDN',
+          idValue: payerMSISDN
+        },
+        to: {
+          idType: 'MSISDN',
+          idValue: payeeMSISDN
+        },
+        amountType: 'SEND',
+        currency,
+        amount,
+        transactionType: 'TRANSFER',
+        initiatorType: 'CONSUMER',
+        note: 'test payment',
+        homeTransactionId: uuid()
+      }
     },
-    to: {
-      idType: 'MSISDN',
-      idValue: payeeMSISDN // '25644444444'
-    },
-    amountType: 'SEND',
-    currency,
-    amount,
-    transactionType: 'TRANSFER',
-    note: 'test payment',
-    homeTransactionId: uuid()
-  }
-
+    {
+      name: 'scenario2',
+      operation: 'putTransfers',
+      params: {
+        transferId: '{{scenario1.result.transferId}}'
+      },
+      body: {
+        acceptQuote: true
+      }
+    }
+  ]
   const options: AxiosRequestConfig = {
     url,
     method: 'POST',
@@ -257,4 +273,49 @@ export async function getSettlement ({ url, method }
     cookieJar
   })
   return response.body
+}
+
+export async function addParticipant (url: string, dfspId: string, msisdn: string, currency: string) {
+  const body = { fspId: dfspId, currency }
+  const options: AxiosRequestConfig = {
+    url: `${url}/participants/MSISDN/${msisdn}`,
+    method: 'POST',
+    data: JSON.stringify(body),
+    headers: {
+      'Content-Type': 'application/vnd.interoperability.participants+json;version=1.0',
+      Accept: 'application/vnd.interoperability.participants+json;version=1.0',
+      date: DateTime.now().toUTC().toISO(),
+      'fspiop-source': dfspId
+    }
+  }
+  const response = await axios(options)
+  expect(response.status).toBe(202)
+}
+
+export async function registerParticipantMSISDN (url: string, dfspId: string, msisdn: string) {
+  const body = {
+    displayName: 'Test FSP',
+    firstName: 'FSPFirst',
+    middleName: 'FSPMiddle',
+    lastName: 'FSPLast',
+    dateOfBirth: '2010-10-10',
+    idType: 'MSISDN',
+    idValue: msisdn
+  }
+  const options: AxiosRequestConfig = {
+    url: `${url}/repository/parties`,
+    method: 'POST',
+    data: JSON.stringify(body),
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+      'fspiop-source': dfspId
+    }
+  }
+  try {
+    const response = await axios(options)
+    expect(response.status).toBe(204)
+  } catch (error: any) {
+    expect(error.response.status).toBe(500)
+  }
 }
