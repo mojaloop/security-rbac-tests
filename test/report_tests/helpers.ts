@@ -129,8 +129,8 @@ export async function fundsOut ({ url, method }
   return transferId
 }
 
-function delay (time: number) {
-  return new Promise(resolve => setTimeout(resolve, time))
+function delay (ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms))
 }
 
 export async function getReport ({ url } : TestParameters, cookieJar: CookieJar): Promise<any> {
@@ -149,6 +149,7 @@ export async function getReport ({ url } : TestParameters, cookieJar: CookieJar)
 
 export async function closeCurrentOpenSettlementWindow ({ url, method }
 :TestParameters, cookieJar: CookieJar) {
+  await delay(5000)
   const body = { state: 'CLOSED', reason: 'Automated testing for Settlement Reports' }
 
   const response = await got.post({
@@ -225,6 +226,7 @@ export async function sendMoney (url: string, payerMSISDN: string, payeeMSISDN: 
 
 export async function createSettlement ({ url, method }
 :TestParameters, cookieJar: CookieJar, settlementWindowId: string): Promise<any> {
+  await delay(10000)
   const body = {
     settlementModel: 'DEFERREDNET',
     reason: 'Automated testing of Settlement Report',
