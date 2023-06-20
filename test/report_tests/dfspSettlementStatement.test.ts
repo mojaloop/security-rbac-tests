@@ -185,7 +185,7 @@ describe('DFSP Settlements Statement Report', () => {
         currency,
         transferAmount
       )
-      expect(transferResponse.scenario2.result.fulfil.transferState).toEqual('COMMITTED')
+      expect(transferResponse.scenario2.result.fulfil.body.transferState).toEqual('COMMITTED')
 
       // Get the current open window after transfer
       openWindow = await getCurrentOpenSettlementWindow(openWindowParams, cookieJarObj)

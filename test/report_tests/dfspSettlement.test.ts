@@ -225,7 +225,7 @@ describe('DFSP Settlements Report', () => {
         currency,
         transferAmount1
       )
-      expect(transferResponse1.scenario2.result.fulfil.transferState).toEqual('COMMITTED')
+      expect(transferResponse1.scenario2.result.fulfil.body.transferState).toEqual('COMMITTED')
 
       // Send money from payer to payee
       const transferResponse2 = await sendMoney(
@@ -235,7 +235,7 @@ describe('DFSP Settlements Report', () => {
         currency,
         transferAmount2
       )
-      expect(transferResponse2.scenario2.result.fulfil.transferState).toEqual('COMMITTED')
+      expect(transferResponse2.scenario2.result.fulfil.body.transferState).toEqual('COMMITTED')
 
       // Send money from payee to payer
       const transferResponse3 = await sendMoney(
@@ -245,7 +245,7 @@ describe('DFSP Settlements Report', () => {
         currency,
         transferAmount3
       )
-      expect(transferResponse3.scenario2.result.fulfil.transferState).toEqual('COMMITTED')
+      expect(transferResponse3.scenario2.result.fulfil.body.transferState).toEqual('COMMITTED')
 
       // Get the current open window after transfer
       openWindow = await getCurrentOpenSettlementWindow(openWindowParams, cookieJarObj)
