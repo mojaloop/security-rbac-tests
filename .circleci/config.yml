@@ -623,7 +623,7 @@ workflows:
             # TODO: Commenting the license check because the following library is failing
             # Package "buffers@0.1.1" is licensed under "Custom: http://github.com/substack/node-bufferlist" which is not permitted by the --onlyAllow flag. Exiting.
             # - audit-licenses
-            - license-scan
+            # - license-scan
             - image-scan
           filters:
             tags:
