@@ -1,4 +1,4 @@
-FROM node:18.16.0-alpine as builder
+FROM node:16.15.0-alpine as builder
 WORKDIR /opt/app
 
 RUN apk --no-cache add git
@@ -14,7 +14,7 @@ RUN npm ci
 COPY test /opt/app/test
 COPY jest.config.js tsconfig.json /opt/app/
 
-FROM node:18.16.0-alpine
+FROM node:16.15.0-alpine
 WORKDIR /opt/app
 
 # Create empty log file & link stdout to the application log file
