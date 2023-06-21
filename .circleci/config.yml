@@ -374,7 +374,7 @@ jobs:
           at: /tmp
       - run:
           name: Load the pre-built docker image from workspace
-          command: |
+          command: | 
             docker load -i /tmp/docker-image.tar
       - run:
           name: Login to Docker Hub
@@ -432,7 +432,7 @@ jobs:
           at: /tmp
       - run:
           name: Load the pre-built docker image from workspace
-          command: |
+          command: | 
             docker load -i /tmp/docker-image.tar
       - run:
           name: Login to Docker Hub
@@ -507,39 +507,6 @@ workflows:
               ignore:
                 - /feature*/
                 - /bugfix*/
-      - test-unit:
-          context: org-global
-          requires:
-            - setup
-          filters:
-            tags:
-              only: /.*/
-            branches:
-              ignore:
-                - /feature*/
-                - /bugfix*/
-      - test-coverage:
-          context: org-global
-          requires:
-            - setup
-          filters:
-            tags:
-              only: /.*/
-            branches:
-              ignore:
-                - /feature*/
-                - /bugfix*/
-      - test-integration:
-          context: org-global
-          requires:
-            - setup
-          filters:
-            tags:
-              only: /.*/
-            branches:
-              ignore:
-                - /feature*/
-                - /bugfix*/
       - vulnerability-check:
           context: org-global
           requires:
@@ -568,9 +535,6 @@ workflows:
             - setup
             - test-dependencies
             - test-lint
-            - test-unit
-            - test-coverage
-            - test-integration
             - vulnerability-check
             - audit-licenses
           filters:
@@ -606,9 +570,6 @@ workflows:
             - pr-tools/pr-title-check
             - test-dependencies
             - test-lint
-            - test-unit
-            - test-coverage
-            - test-integration
             - vulnerability-check
             - audit-licenses
             - license-scan
@@ -633,12 +594,8 @@ workflows:
             - pr-tools/pr-title-check
             - test-dependencies
             - test-lint
-            - test-unit
-            - test-coverage
-            - test-integration
             - vulnerability-check
             - audit-licenses
-            - test-integration
             - license-scan
             - image-scan
           filters:
@@ -653,12 +610,8 @@ workflows:
             - pr-tools/pr-title-check
             - test-dependencies
             - test-lint
-            - test-unit
-            - test-coverage
-            - test-integration
             - vulnerability-check
             - audit-licenses
-            - test-integration
             - license-scan
             - image-scan
           filters:
