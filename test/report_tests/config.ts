@@ -74,3 +74,7 @@ export const payeeMSISDN = env.get('TEST_PAYEE_MSISDN')
 export const currency = env.get('TEST_CURRENCY')
   .default('USD')
   .asString()
+
+export const settlementModel = env.get('TEST_SETTLEMENT_MODEL')
+  .default('DEFAULTDEFERREDNET')
+  .asString()

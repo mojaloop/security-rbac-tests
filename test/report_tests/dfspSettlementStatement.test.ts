@@ -107,7 +107,7 @@ describe('DFSP Settlements Statement Report', () => {
   describe('Happy Path', () => {
     it('Run a transfer, settle a settlement and extract the report', async () => {
       // Get the start date
-      const startDate: string = DateTime.now().toUTC().toISO()
+      const startDate = DateTime.now().toUTC().toISO()
 
       // Do funds in for payer and payee to get the balance
       let getParticipantParams: TestParameters = {
@@ -185,7 +185,7 @@ describe('DFSP Settlements Statement Report', () => {
         currency,
         transferAmount
       )
-      expect(transferResponse.scenario2.result.fulfil.transferState).toEqual('COMMITTED')
+      expect(transferResponse.scenario2.result.fulfil.body.transferState).toEqual('COMMITTED')
 
       // Get the current open window after transfer
       openWindow = await getCurrentOpenSettlementWindow(openWindowParams, cookieJarObj)
@@ -322,7 +322,7 @@ describe('DFSP Settlements Statement Report', () => {
       expect(putSettlementResponse.state).toEqual('SETTLED')
 
       // Get the end date + 2 mins to allow for the transfers to complete
-      const endDate: string = DateTime.now().plus({ minutes: 2 }).toUTC().toISO()
+      const endDate = DateTime.now().plus({ minutes: 2 }).toUTC().toISO()
 
       // Get the latest settlement statement report for payer
       const getPayerSettlementAuditReportParams: TestParameters = {
@@ -461,7 +461,7 @@ describe('DFSP Settlements Statement Report', () => {
     })
     it('Run funds in and out, run the report ', async () => {
       // Get the start date
-      const startDate: string = DateTime.now().toUTC().toISO()
+      const startDate = DateTime.now().toUTC().toISO()
 
       const getParticipantParams: TestParameters = {
         url: new URL(`${centralLedgerAdminEndpoint}/participants/${payer}/accounts`),
@@ -519,7 +519,7 @@ describe('DFSP Settlements Statement Report', () => {
       )
 
       // Get the end date + 2 mins to allow for the transfers to complete
-      const endDate: string = DateTime.now().plus({ minutes: 2 }).toUTC().toISO()
+      const endDate = DateTime.now().plus({ minutes: 2 }).toUTC().toISO()
 
       // Get the latest settlement audit report
       const getDfspSettlementStatementReportParams: TestParameters = {

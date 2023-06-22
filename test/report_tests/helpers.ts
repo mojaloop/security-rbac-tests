@@ -37,6 +37,10 @@ import {
   TestParameters
 } from './types'
 
+import {
+  settlementModel
+} from './config'
+
 import { CookieJar } from 'tough-cookie'
 
 const GOT_JSON_OPTS: OptionsOfJSONResponseBody = {
@@ -228,7 +232,7 @@ export async function createSettlement ({ url, method }
 :TestParameters, cookieJar: CookieJar, settlementWindowId: string): Promise<any> {
   await delay(10000)
   const body = {
-    settlementModel: 'DEFERREDNET',
+    settlementModel,
     reason: 'Automated testing of Settlement Report',
     settlementWindows: [
       { id: settlementWindowId }
