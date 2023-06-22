@@ -135,7 +135,7 @@ export async function appendUserRole (id: User['id'], role: Role) {
 export async function appendUserParticipant (id: User['id'], participantId: string) {
   const body: ParticipantPatch = {
     participantOperations: [{
-      participantId: participantId,
+      participantId,
       action: 'insert'
     }]
   }

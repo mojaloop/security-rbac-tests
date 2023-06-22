@@ -107,7 +107,7 @@ describe('DFSP Settlements Statement Report', () => {
   describe('Happy Path', () => {
     it('Run a transfer, settle a settlement and extract the report', async () => {
       // Get the start date
-      const startDate = DateTime.now().toISO()
+      const startDate = DateTime.now().toUTC().toISO()
 
       // Do funds in for payer and payee to get the balance
       let getParticipantParams: TestParameters = {
