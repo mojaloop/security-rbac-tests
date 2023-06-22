@@ -1,6 +1,6 @@
 {
   "name": "security-rbac-tests",
-  "version": "1.1.0-snapshot.3",
+  "version": "1.1.0-snapshot.4",
   "description": "RBAC tests",
   "main": "index.js",
   "scripts": {
